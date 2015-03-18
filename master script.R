@@ -3,6 +3,9 @@
 time <- 2001:2100
 # time step
 dt <- 1
+# cell size in km
+cell_size <- 100
+
 
 #### Spatial base layer ####
 # Basic grid

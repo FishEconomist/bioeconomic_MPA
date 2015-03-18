@@ -1,3 +1,35 @@
 #### Spatial base layer ####
 # Basic grid
 print("Now calculating: Basic grid")
+print(paste0("cell size = ",cell_size," km by ",cell_size," km"))
+
+# EEZ shapefile obtained from http://www.marineregions.org/gazetteer.php?p=details&id=8777 in March 2015
+require(rgdal)
+
+EEZ <- readOGR(dsn="D:/WDPA_Mar2015_Public",layer="eez_iho_union_v2")
+bb <- bbox(EEZ)
+EEZ <- spTransform(EEZ,CRS(paste0("+proj=aeqd +lon_0=",mean(bb[1,])," +lat_0=",mean(bb[2,])," +units=m")))
+plot(EEZ)
+
+#### create habitat grid ####
+bb <- bbox(EEZ)
+cs <- c(cell_size,cell_size)*1000  # cell size
+cc <- bb[, 1] + (cs/2)  # cell offset
+cd <- ceiling(diff(t(bb))/cs)  # number of cells per direction
+grd <- GridTopology(cellcentre.offset=cc, cellsize=cs, cells.dim=cd)
+grd
+
+sp_grd <- SpatialGridDataFrame(grd,
+                               data=data.frame(id=1:prod(cd)),
+                               proj4string=CRS(proj4string(EEZ)))
+
+#### make grid into polygon ####
+library(Grid2Polygons)
+p <- Grid2Polygons(sp_grd)
+plot(p,add=T)
+
+#### trim grid polygon to EEZ
+library(rgeos)
+p2 <- gIntersection(EEZ,p,byid=TRUE, drop_not_poly=TRUE)
+plot(p2)
+points(-897136.93622171076,-844991.38650274999)
