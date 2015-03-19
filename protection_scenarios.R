@@ -6,3 +6,6 @@ print("Now calculating: Protection scenarios")
 # calculations of MPA size frequency are done in MPA_size.org
 MPA_size_dist_coast <- read.csv("MPA_size_dist_coast.csv")
 MPA_size_dist_mar <- read.csv("MPA_size_dist_mar.csv")
+
+sum(sapply(slot(p, "polygons"), slot, "area"))
+
