@@ -7,6 +7,12 @@ MPAs_mar <- readOGR(dsn="D:/WDPA_Mar2015_Public",layer="WDPA_poly_Mar2015_MARINE
 MPAs_coast <- MPAs_coast[MPAs_coast$REP_M_AREA>0,]  #filter out marine area=0
 MPAs_mar <- MPAs_mar[MPAs_mar$REP_M_AREA>0,]  #filter out marine area=0
 
+# tranform to standard projection
+require(sp)
+MPAs_coast <- spTransform(MPAs_coast,CRS(proj))
+MPAs_mar <- spTransform(MPAs_mar,CRS(proj))
+
+
 
 # plot(MPAs)
 hist(MPAs_coast$REP_M_AREA,breaks=200)
@@ -50,10 +56,9 @@ h <- hist(log10(MPAs_coast$REP_M_AREA),breaks=200,xlim=c(-10,10))
 #### trim MPA to EEZ ####
 # EEZ shapefile obtained from http://www.marineregions.org/gazetteer.php?p=details&id=8777 in March 2015
 EEZ <- readOGR(dsn="D:/WDPA_Mar2015_Public",layer="eez_iho_union_v2")
-library(sp)
-EEZ <- spTransform(EEZ,CRS(proj4string(MPAs_coast)))
+EEZ <- spTransform(EEZ,CRS(proj))
 
-library(rgeos)
+require(rgeos)
 
 index <- gIntersects(MPAs_coast,EEZ, byid=TRUE)
 index <- apply(index,2,sum)
