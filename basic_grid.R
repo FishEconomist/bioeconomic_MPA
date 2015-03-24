@@ -7,7 +7,6 @@ print(paste0("cell size = ",cell_size," km by ",cell_size," km"))
 require(rgdal)
 
 EEZ <- readOGR(dsn="D:/WDPA_Mar2015_Public",layer="eez_iho_union_v2")
-EEZ <- EEZ[EEZ$marregion!='Canadian part of the Davis Strait',]
 EEZ <- spTransform(EEZ,CRS(proj))
 bb <- bbox(EEZ)
 plot(EEZ)
