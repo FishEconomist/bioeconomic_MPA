@@ -5,9 +5,12 @@ print(paste0("cell size = ",cell_size," km by ",cell_size," km"))
 
 # EEZ shapefile obtained from http://www.marineregions.org/gazetteer.php?p=details&id=8777 in March 2015
 require(rgdal)
+require(maptools)
+
 
 EEZ <- readOGR(dsn="D:/WDPA_Mar2015_Public",layer="eez_iho_union_v2")
 EEZ <- spTransform(EEZ,CRS(proj))
+EEZ <- unionSpatialPolygons(EEZ,rep(1,length(EEZ)))
 bb <- bbox(EEZ)
 plot(EEZ)
 
@@ -30,5 +33,5 @@ plot(p,add=T)
 
 #### trim grid polygon to EEZ
 library(rgeos)
-p <- gIntersection(EEZ,p,byid=TRUE, drop_not_poly=TRUE)
+p <- gIntersection(EEZ,p,byid=T, drop_not_poly=TRUE)
 plot(p)
