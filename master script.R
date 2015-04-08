@@ -1,3 +1,4 @@
+rm(list=ls())
 #### User input ####
 # total model run time in years (e.g. 2001:2100 would be 100 years)
 time <- 2001:2100

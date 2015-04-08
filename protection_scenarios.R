@@ -12,6 +12,7 @@ require(rgdal)
 MPAs_coast <- readOGR(dsn=getwd(),layer="MPAs_coast")
 MPAs_mar <- readOGR(dsn=getwd(),layer="MPAs_mar")
 EEZ <- readOGR(dsn=getwd(),layer="eez_iho_union_v2")
+EEZ <- EEZ[EEZ$marregion!="Canadian part of the Davis Strait",]
 # standard projection
 require(sp)
 MPAs_coast <- spTransform(MPAs_coast,CRS(proj))
@@ -37,6 +38,20 @@ MPAs_AOI <- spChFIDs(MPAs_AOI,paste("AOI",c(1:length(MPAs_AOI))))
 MPAs_coast <- spChFIDs(MPAs_coast,paste("coast",c(1:length(MPAs_coast))))
 MPAs_mar <- spChFIDs(MPAs_mar,paste("mar",c(1:length(MPAs_mar))))
 
+#### rbind MPAs ####
+MPAs <- rbind(MPAs_AOI,MPAs_coast)
+MPAs <- rbind(MPAs,MPAs_mar)
+
+#### match dataframe for p ####
+df <- MPAs@data[1,]
+df[,sapply(df, is.numeric)] <- 0
+df[,sapply(df, is.numeric)==F] <- NA
+df <- df[rep(1,length(p)),]
+p <- SpatialPolygonsDataFrame(p,df,match.ID = F)
+p <- spChFIDs(p,paste("p",c(1:length(p))))
+
+
+
 #### make Canada (land) polygon for placement of coastal MPAs ####
 data(wrld_simpl)
 Canada <- wrld_simpl[wrld_simpl$NAME=="Canada", ]
@@ -45,12 +60,46 @@ rm(wrld_simpl)
 plot(Canada)
 
 
-coastal <- gDistance(p,Canada,byid=T)==0
-plot(p[coastal])
+coastal <- as.vector(gDistance(p,Canada,byid=T)==0)
+plot(p[coastal,])
 
-sum(sapply(slot(p, "polygons"), slot, "area"))
+tot_area <- gArea(EEZ)
+MPA_cov_current <- gArea(gIntersection(MPAs,EEZ,byid = T))/tot_area
 
-size <- exp(generate_MPAs(1,MPA_size_dist_coast$cum_prob,MPA_size_dist_coast$breaks))
-seed <- round(runif(1,1,length(p[coastal])))
-gArea(p[coastal][seed])
-gArea(EEZ)
+# pdist <- gDistance(p,p,byid=T)
+MPA_cov_new <- 0
+p2 <- p
+while((MPA_cov_current+MPA_cov_new)<MPA_coverage){
+    size <- generate_MPAs(1,MPA_size_dist_coast$cum_prob,MPA_size_dist_coast$breaks)
+    seed <- round(runif(1,1,length(p[coastal,])))
+    new_MPA <- p[coastal,][seed,]
+    seed_area <- gArea(p[coastal,][seed,])
+    p2 <- p2[-seed,]
+    plot(p2)
+    plot(new_MPA,col="blue",add=T)
+    while(seed_area<size){
+        pdist <- gDistance(new_MPA,p2,byid=T)
+        pdist <- apply(pdist,1,mean)
+        sprout <- pdist==min(pdist)
+        while(sum(sprout)>1) sprout[sprout==T][round(runif(1,1,length(sprout[sprout==T])))] <- F
+        sprout_MPA <- p2[sprout,]
+        plot(p2)
+        plot(new_MPA,col="blue",add=T)
+        plot(sprout_MPA,col="red",add=T)
+        p2 <- p2[-which(sprout),]
+        while(gContains(new_MPA,sprout_MPA)==F){
+            new_MPA <- rbind(new_MPA,sprout_MPA)
+            seed_area <- gArea(new_MPA)
+        }
+    }
+    while(sum(gContains(MPAs,new_MPA,byid = T))<1){
+        seed_area <- gArea(new_MPA)
+        MPA_cov_new <- MPA_cov_new + (seed_area/tot_area)
+        MPAs <- rbind(MPAs,new_MPA)
+        plot(p2)
+        plot(MPAs,col="red",add=T)
+        plot(new_MPA,col="blue",add=T)
+        print(MPA_cov_current+MPA_cov_new)
+    }
+}
+
