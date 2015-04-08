@@ -60,46 +60,18 @@ rm(wrld_simpl)
 plot(Canada)
 
 
-coastal <- as.vector(gDistance(p,Canada,byid=T)==0)
+coastal <- as.vector(gDistance(p,Canada,byid=T)<cell_size)
 plot(p[coastal,])
 
 tot_area <- gArea(EEZ)
 MPA_cov_current <- gArea(gIntersection(MPAs,EEZ,byid = T))/tot_area
 
-# pdist <- gDistance(p,p,byid=T)
-MPA_cov_new <- 0
-p2 <- p
-while((MPA_cov_current+MPA_cov_new)<MPA_coverage){
-    size <- generate_MPAs(1,MPA_size_dist_coast$cum_prob,MPA_size_dist_coast$breaks)
-    seed <- round(runif(1,1,length(p[coastal,])))
-    new_MPA <- p[coastal,][seed,]
-    seed_area <- gArea(p[coastal,][seed,])
-    p2 <- p2[-seed,]
-    plot(p2)
-    plot(new_MPA,col="blue",add=T)
-    while(seed_area<size){
-        pdist <- gDistance(new_MPA,p2,byid=T)
-        pdist <- apply(pdist,1,mean)
-        sprout <- pdist==min(pdist)
-        while(sum(sprout)>1) sprout[sprout==T][round(runif(1,1,length(sprout[sprout==T])))] <- F
-        sprout_MPA <- p2[sprout,]
-        plot(p2)
-        plot(new_MPA,col="blue",add=T)
-        plot(sprout_MPA,col="red",add=T)
-        p2 <- p2[-which(sprout),]
-        while(gContains(new_MPA,sprout_MPA)==F){
-            new_MPA <- rbind(new_MPA,sprout_MPA)
-            seed_area <- gArea(new_MPA)
-        }
-    }
-    while(sum(gContains(MPAs,new_MPA,byid = T))<1){
-        seed_area <- gArea(new_MPA)
-        MPA_cov_new <- MPA_cov_new + (seed_area/tot_area)
-        MPAs <- rbind(MPAs,new_MPA)
-        plot(p2)
-        plot(MPAs,col="red",add=T)
-        plot(new_MPA,col="blue",add=T)
-        print(MPA_cov_current+MPA_cov_new)
-    }
-}
+#### place coastal MPAs ####
+MPAs2 <- generate_MPAs(MPAs,p[coastal,],p,MPA_coverage*CtoM,EEZ,Protection_type)
+plot(EEZ)
+plot(MPAs2,col="blue",add=T)
 
+#### place marine MPAs ####
+MPAs3 <- generate_MPAs(MPAs2,p,p,(MPA_coverage-(MPA_coverage*CtoM)),EEZ,Protection_type)
+plot(EEZ)
+plot(MPAs3,col="red",add=T)

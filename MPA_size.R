@@ -12,7 +12,8 @@ require(sp)
 MPAs_coast <- spTransform(MPAs_coast,CRS(proj))
 MPAs_mar <- spTransform(MPAs_mar,CRS(proj))
 
-
+# current coastal:marine ratio
+sum(MPAs_coast$REP_M_AREA)/sum(MPAs_coast$REP_M_AREA,MPAs_mar$REP_M_AREA)
 
 # plot(MPAs)
 hist(MPAs_coast$REP_M_AREA,breaks=200)

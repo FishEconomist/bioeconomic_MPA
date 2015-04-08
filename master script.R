@@ -5,11 +5,15 @@ time <- 2001:2100
 # time step
 dt <- 1
 # cell size in km
-cell_size <- 100
+cell_size <- 25
 # default projection
 proj  <- "+proj=lcc +lat_1=40 +lat_2=70 +lat_0=-71.3 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m +no_defs"
 # target protection level in proportion (e.g. 0.2 is 20% protection)
 MPA_coverage <- 0.20
+# coastal:marine ratio (e.g. CtoM <- 0.4 is 60% marine and 40% coastal in terms of area)
+CtoM <- 0.0009422693
+# protection scenario type "Random", "MaxDist", or numeric value for set distance
+Protection_type <- "Random"
 
 #### source custom functions ####
 source("functions.R")
