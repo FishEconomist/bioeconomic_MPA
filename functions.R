@@ -16,6 +16,8 @@ generate_MPA_size <- function(n,cum_prob,breaks){
     10^log_size
 }
 
+
+# protection scenario type "Random", "MaxDist", or numeric value for set distance
 generate_MPAs <- function(preexist_polygons,seed_polygons,sprout_polygons,cover,EEZ,type){
     MPA_cov_new <- 0
     MPA_cov_current <- gArea(gIntersection(preexist_polygons,EEZ,byid = T))/tot_area
@@ -76,9 +78,9 @@ generate_MPAs <- function(preexist_polygons,seed_polygons,sprout_polygons,cover,
             seed_area <- gArea(new_MPA)
             MPA_cov_new <- MPA_cov_new + (seed_area/tot_area)
             preexist_polygons <- rbind(preexist_polygons,new_MPA)
-#             plot(p)
-#             plot(preexist_polygons,col="red",add=T)
-#             plot(new_MPA,col="blue",add=T)
+            plot(p)
+            plot(preexist_polygons,col="red",add=T)
+            plot(new_MPA,col="blue",add=T)
             print(paste0("Added new MPA, new percent cover = ",round(MPA_cov_current+MPA_cov_new,4)))
         }
     }
