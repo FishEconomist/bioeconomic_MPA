@@ -13,7 +13,7 @@ generate_MPA_size <- function(n,cum_prob,breaks){
     bin <- sapply(x,find_bin,cum_prob)
     low_break <- breaks[bin]
     log_size <- sapply(low_break,random_between_breaks)
-    10^log_size
+    (10^6)*(10^log_size)
 }
 
 
@@ -33,7 +33,7 @@ generate_MPAs <- function(preexist_polygons,seed_polygons,sprout_polygons,cover,
         # seed for max-dist
         if(type=="MaxDist"){
             pdist <- gDistance(seed_polygons,preexist_polygons,byid=T)
-            pdist2 <- apply(pdist,2,max)            
+            pdist2 <- apply(pdist,2,mean)            
             seed <- pdist2==max(pdist2)
             while(sum(seed)>1) seed[seed==T][round(runif(1,1,length(seed[seed==T])))] <- F
             seed <- which(seed)
@@ -42,8 +42,8 @@ generate_MPAs <- function(preexist_polygons,seed_polygons,sprout_polygons,cover,
         if(is.numeric(type)){
             pdist <- gDistance(seed_polygons,preexist_polygons,byid=T)
             pdist <- abs(pdist-type)
-            pdist2 <- apply(pdist,2,min)            
-            seed <- pdist2==max(pdist2)
+            pdist2 <- apply(pdist,2,mean)            
+            seed <- pdist2==min(pdist2)
             while(sum(seed)>1) seed[seed==T][round(runif(1,1,length(seed[seed==T])))] <- F
             seed <- which(seed)
         }
