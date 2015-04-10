@@ -12,7 +12,10 @@ require(rgdal)
 MPAs_coast <- readOGR(dsn=getwd(),layer="MPAs_coast")
 MPAs_mar <- readOGR(dsn=getwd(),layer="MPAs_mar")
 EEZ <- readOGR(dsn=getwd(),layer="eez_iho_union_v2")
+
+# remove Canadian part of the Davis Strait for EEZ
 EEZ <- EEZ[EEZ$marregion!="Canadian part of the Davis Strait",]
+
 # standard projection
 require(sp)
 MPAs_coast <- spTransform(MPAs_coast,CRS(proj))
@@ -42,6 +45,12 @@ MPAs_mar <- spChFIDs(MPAs_mar,paste("mar",c(1:length(MPAs_mar))))
 MPAs <- rbind(MPAs_AOI,MPAs_coast)
 MPAs <- rbind(MPAs,MPAs_mar)
 
+# remove Canadian part of the Davis Strait for MPA
+MPAs <- MPAs[as.logical(gContains(EEZ,MPAs,byid=T)),]
+
+#### ignore any MPAs smaller than 10% of grid size ####
+MPAs <- MPAs[gArea(MPAs,byid=T)/(10^6)>(0.1*(cell_size^2)),]
+
 #### match dataframe for p ####
 df <- MPAs@data[1,]
 df[,sapply(df, is.numeric)] <- 0
@@ -50,8 +59,6 @@ df <- df[rep(1,length(p)),]
 p <- SpatialPolygonsDataFrame(p,df,match.ID = F)
 p <- spChFIDs(p,paste("p",c(1:length(p))))
 
-
-
 #### make Canada (land) polygon for placement of coastal MPAs ####
 data(wrld_simpl)
 Canada <- wrld_simpl[wrld_simpl$NAME=="Canada", ]
@@ -59,18 +66,14 @@ Canada <- spTransform(Canada,CRS(proj))
 rm(wrld_simpl)
 plot(Canada)
 
-
 coastal <- as.vector(gDistance(p,Canada,byid=T)<cell_size)
 plot(p[coastal,])
 
-tot_area <- gArea(EEZ)
-MPA_cov_current <- gArea(gIntersection(MPAs,EEZ,byid = T))/tot_area
-
-#### place coastal MPAs ####
-print("Establishing new coastal randomly placed MPAs")
-MPAs_random <- generate_MPAs(MPAs,p[coastal,],p,MPA_coverage*CtoM,EEZ,"Random")
-plot(EEZ)
-plot(MPAs_random,col="blue",add=T)
+# #### place coastal MPAs ####
+# print("Establishing new coastal randomly placed MPAs")
+# MPAs_random <- generate_MPAs(MPAs,p[coastal,],p,MPA_coverage*CtoM,EEZ,"Random")
+# plot(EEZ)
+# plot(MPAs_random,col="blue",add=T)
 
 print("Establishing new coastal maximum distance MPAs")
 MPAs_maxdist <- generate_MPAs(MPAs,p[coastal,],p,MPA_coverage*CtoM,EEZ,"MaxDist")
@@ -78,15 +81,15 @@ plot(EEZ)
 plot(MPAs_maxdist,col="blue",add=T)
 
 print(paste0("Establishing new coastal fixed distance (",fixdist," km) MPAs"))
-MPAs_fixed50 <- generate_MPAs(MPAs,p[coastal,],p,MPA_coverage*CtoM,EEZ,fixdist)
+MPAs_fixed <- generate_MPAs(MPAs,p[coastal,],p,MPA_coverage*CtoM,EEZ,fixdist)
 plot(EEZ)
-plot(MPAs_fixed50,col="blue",add=T)
+plot(MPAs_fixed,col="blue",add=T)
 
-#### place marine MPAs ####
-print("Establishing new marine randomly placed MPAs")
-MPAs_random <- generate_MPAs(MPAs_random,p,p,(MPA_coverage-(MPA_coverage*CtoM)),EEZ,"Random")
-plot(EEZ)
-plot(MPAs_random,col="red",add=T)
+# #### place marine MPAs ####
+# print("Establishing new marine randomly placed MPAs")
+# MPAs_random <- generate_MPAs(MPAs_random,p,p,(MPA_coverage-(MPA_coverage*CtoM)),EEZ,"Random")
+# plot(EEZ)
+# plot(MPAs_random,col="red",add=T)
 
 print("Establishing new marine maximum distance MPAs")
 MPAs_maxdist <- generate_MPAs(MPAs_maxdist,p,p,(MPA_coverage-(MPA_coverage*CtoM)),EEZ,"MaxDist")
@@ -94,6 +97,9 @@ plot(EEZ)
 plot(MPAs_maxdist,col="red",add=T)
 
 print(paste0("Establishing new marine fixed distance (",fixdist," km) MPAs"))
-MPAs_fixed50 <- generate_MPAs(MPAs_fixed50,p,p,(MPA_coverage-(MPA_coverage*CtoM)),EEZ,fixdist)
+MPAs_fixed <- generate_MPAs(MPAs_fixed,p,p,(MPA_coverage-(MPA_coverage*CtoM)),EEZ,fixdist)
 plot(EEZ)
-plot(MPAs_fixed50,col="red",add=T)
+plot(MPAs_fixed,col="red",add=T)
+
+plot(EEZ)
+plot(MPAs_maxdist,col="red",add=T)

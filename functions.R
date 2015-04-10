@@ -34,7 +34,7 @@ generate_MPAs <- function(preexist_polygons,seed_polygons,sprout_polygons,cover,
         # seed for max-dist
         if(type=="MaxDist"){
             pdist <- gDistance(seed_polygons,preexist_polygons,byid=T)
-            pdist <- log10(pdist)
+            pdist <- log10(pdist+1)
             pdist2 <- apply(pdist,2,mean)          
             seed <- pdist2==max(pdist2)
             while(sum(seed)>1) seed[seed==T][round(runif(1,1,length(seed[seed==T])))] <- F
@@ -43,7 +43,7 @@ generate_MPAs <- function(preexist_polygons,seed_polygons,sprout_polygons,cover,
         # seed for set distance
         if(is.numeric(type)){
             pdist <- gDistance(seed_polygons,preexist_polygons,byid=T)
-            pdist <- pdist>type/2|pdist<type*2
+            pdist <- pdist>type*0.5|pdist<type*1.5
             pdist2 <- apply(pdist,2,sum)         
             seed <- pdist2==min(pdist2)
             while(sum(seed)>1) seed[seed==T][round(runif(1,1,length(seed[seed==T])))] <- F
@@ -78,6 +78,10 @@ generate_MPAs <- function(preexist_polygons,seed_polygons,sprout_polygons,cover,
             }
         }
         while(sum(gContains(preexist_polygons,new_MPA,byid = T))<1){
+            df <- new_MPA@data[1,]
+            new_MPA <- unionSpatialPolygons(new_MPA,rep(1,length(new_MPA)))
+            new_MPA <- SpatialPolygonsDataFrame(new_MPA,df,match.ID = F)
+            new_MPA <- spChFIDs(new_MPA,paste("new",MPA_count))
             seed_area <- gArea(new_MPA)
             MPA_cov_new <- MPA_cov_new + (seed_area/tot_area)
             preexist_polygons <- rbind(preexist_polygons,new_MPA)
