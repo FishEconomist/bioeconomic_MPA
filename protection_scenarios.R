@@ -69,37 +69,46 @@ plot(Canada)
 coastal <- as.vector(gDistance(p,Canada,byid=T)<cell_size)
 plot(p[coastal,])
 
-# #### place coastal MPAs ####
-# print("Establishing new coastal randomly placed MPAs")
-# MPAs_random <- generate_MPAs(MPAs,p[coastal,],p,MPA_coverage*CtoM,EEZ,"Random")
-# plot(EEZ)
-# plot(MPAs_random,col="blue",add=T)
-
-print("Establishing new coastal maximum distance MPAs")
-MPAs_maxdist <- generate_MPAs(MPAs,p[coastal,],p,MPA_coverage*CtoM,EEZ,"MaxDist")
-plot(EEZ)
-plot(MPAs_maxdist,col="blue",add=T)
-
-print(paste0("Establishing new coastal fixed distance (",fixdist," km) MPAs"))
-MPAs_fixed <- generate_MPAs(MPAs,p[coastal,],p,MPA_coverage*CtoM,EEZ,fixdist)
-plot(EEZ)
-plot(MPAs_fixed,col="blue",add=T)
-
-# #### place marine MPAs ####
-# print("Establishing new marine randomly placed MPAs")
-# MPAs_random <- generate_MPAs(MPAs_random,p,p,(MPA_coverage-(MPA_coverage*CtoM)),EEZ,"Random")
-# plot(EEZ)
-# plot(MPAs_random,col="red",add=T)
-
-print("Establishing new marine maximum distance MPAs")
-MPAs_maxdist <- generate_MPAs(MPAs_maxdist,p,p,(MPA_coverage-(MPA_coverage*CtoM)),EEZ,"MaxDist")
-plot(EEZ)
-plot(MPAs_maxdist,col="red",add=T)
-
-print(paste0("Establishing new marine fixed distance (",fixdist," km) MPAs"))
-MPAs_fixed <- generate_MPAs(MPAs_fixed,p,p,(MPA_coverage-(MPA_coverage*CtoM)),EEZ,fixdist)
-plot(EEZ)
-plot(MPAs_fixed,col="red",add=T)
-
-plot(EEZ)
-plot(MPAs_maxdist,col="red",add=T)
+if(protect_scen_new){
+    #### place coastal MPAs ####
+    print("Establishing new coastal randomly placed MPAs")
+    MPAs_random <- generate_MPAs(MPAs,p[coastal,],p,MPA_coverage*CtoM,EEZ,"Random")
+    plot(EEZ)
+    plot(MPAs_random,col="blue",add=T)
+    
+    print("Establishing new coastal maximum distance MPAs")
+    MPAs_maxdist <- generate_MPAs(MPAs,p[coastal,],p,MPA_coverage*CtoM,EEZ,"MaxDist")
+    plot(EEZ)
+    plot(MPAs_maxdist,col="blue",add=T)
+    
+    print(paste0("Establishing new coastal fixed distance (",fixdist," km) MPAs"))
+    MPAs_fixed <- generate_MPAs(MPAs,p[coastal,],p,MPA_coverage*CtoM,EEZ,fixdist)
+    plot(EEZ)
+    plot(MPAs_fixed,col="blue",add=T)
+    
+    #### place marine MPAs ####
+    print("Establishing new marine randomly placed MPAs")
+    MPAs_random <- generate_MPAs(MPAs_random,p,p,(MPA_coverage-(MPA_coverage*CtoM)),EEZ,"Random")
+    plot(EEZ)
+    plot(MPAs_random,col="red",add=T)
+    
+    print("Establishing new marine maximum distance MPAs")
+    MPAs_maxdist <- generate_MPAs(MPAs_maxdist,p,p,(MPA_coverage-(MPA_coverage*CtoM)),EEZ,"MaxDist")
+    plot(EEZ)
+    plot(MPAs_maxdist,col="red",add=T)
+    
+    print(paste0("Establishing new marine fixed distance (",fixdist," km) MPAs"))
+    MPAs_fixed <- generate_MPAs(MPAs_fixed,p,p,(MPA_coverage-(MPA_coverage*CtoM)),EEZ,fixdist)
+    plot(EEZ)
+    plot(MPAs_fixed,col="red",add=T)
+    
+    #### save scenarios ####
+    writeOGR(MPAs_random,dsn=getwd(), layer = "MPAs_random", driver = "ESRI Shapefile",overwrite_layer=T)
+    writeOGR(MPAs_maxdist,dsn=getwd(), layer = "MPAs_maxdist", driver = "ESRI Shapefile",overwrite_layer=T)
+    writeOGR(MPAs_fixed,dsn=getwd(), layer = "MPAs_fixed", driver = "ESRI Shapefile",overwrite_layer=T)
+    
+} else {
+    MPAs_random <- readOGR(dsn=getwd(),layer="MPAs_random")
+    MPAs_maxdist <- readOGR(dsn=getwd(),layer="MPAs_maxdist")
+    MPAs_fixed <- readOGR(dsn=getwd(),layer="MPAs_fixed")
+}

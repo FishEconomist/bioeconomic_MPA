@@ -5,7 +5,7 @@ time <- 2001:2100
 # time step in years
 dt <- 1
 # cell size in km
-cell_size <- 10
+cell_size <- 25
 # default projection
 proj  <- "+proj=lcc +lat_1=40 +lat_2=70 +lat_0=-71.3 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m +no_defs"
 # target protection level in proportion (e.g. 0.2 is 20% protection)
@@ -14,6 +14,8 @@ MPA_coverage <- 0.20
 CtoM <- 0.0009422693
 # fixed distance parameters in km
 fixdist <- 200
+# create new protection scenarios?
+protect_scen_new <- F
 
 #### source custom functions ####
 source("functions.R")
