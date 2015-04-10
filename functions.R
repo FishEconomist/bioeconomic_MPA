@@ -19,6 +19,7 @@ generate_MPA_size <- function(n,cum_prob,breaks){
 
 # protection scenario type "Random", "MaxDist", or numeric value for set distance
 generate_MPAs <- function(preexist_polygons,seed_polygons,sprout_polygons,cover,EEZ,type){
+    tot_area <- gArea(EEZ)
     MPA_cov_new <- 0
     MPA_cov_current <- gArea(gIntersection(preexist_polygons,EEZ,byid = T))/tot_area
     MPA_count <- 0
@@ -33,7 +34,8 @@ generate_MPAs <- function(preexist_polygons,seed_polygons,sprout_polygons,cover,
         # seed for max-dist
         if(type=="MaxDist"){
             pdist <- gDistance(seed_polygons,preexist_polygons,byid=T)
-            pdist2 <- apply(pdist,2,mean)            
+            pdist <- log10(pdist)
+            pdist2 <- apply(pdist,2,mean)          
             seed <- pdist2==max(pdist2)
             while(sum(seed)>1) seed[seed==T][round(runif(1,1,length(seed[seed==T])))] <- F
             seed <- which(seed)
@@ -41,8 +43,8 @@ generate_MPAs <- function(preexist_polygons,seed_polygons,sprout_polygons,cover,
         # seed for set distance
         if(is.numeric(type)){
             pdist <- gDistance(seed_polygons,preexist_polygons,byid=T)
-            pdist <- abs(pdist-type)
-            pdist2 <- apply(pdist,2,mean)            
+            pdist <- pdist>type/2|pdist<type*2
+            pdist2 <- apply(pdist,2,sum)         
             seed <- pdist2==min(pdist2)
             while(sum(seed)>1) seed[seed==T][round(runif(1,1,length(seed[seed==T])))] <- F
             seed <- which(seed)
@@ -70,6 +72,7 @@ generate_MPAs <- function(preexist_polygons,seed_polygons,sprout_polygons,cover,
                 seed_polygons <- seed_polygons[-which(gContains(seed_polygons,new_MPA,byid=T)),]
             }
             while(gContains(new_MPA,sprout_MPA)==F){
+                print("Sprouting - Increasing MPA size")
                 new_MPA <- rbind(new_MPA,sprout_MPA)
                 seed_area <- gArea(new_MPA)
             }
