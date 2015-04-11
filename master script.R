@@ -15,7 +15,7 @@ CtoM <- 0.0009422693
 # fixed distance parameters in km
 fixdist <- 200
 # create new protection scenarios?
-protect_scen_new <- F
+protect_scen_new <- T
 
 #### source custom functions ####
 source("functions.R")
