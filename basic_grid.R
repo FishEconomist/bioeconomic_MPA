@@ -34,5 +34,5 @@ plot(p,add=T)
 
 #### trim grid polygon to EEZ
 library(rgeos)
-p <- gIntersection(EEZ,p,byid=T, drop_not_poly=TRUE)
+p <- gIntersection(EEZ,p,byid=T, drop_lower_td=TRUE)
 plot(p)
