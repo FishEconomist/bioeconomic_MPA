@@ -1,7 +1,7 @@
 #### functions for MPA size ####
 #cum_prob and breaks are from MPA_size_dist.csv which is created in MPA_size_dist
 find_bin <- function(x,cum_prob){
-    (which.min(abs(cum_prob-x))-1)[1]
+    (which.min(abs(cum_prob-x)))[1]
 }
 
 random_between_breaks <- function(x){
@@ -11,17 +11,18 @@ random_between_breaks <- function(x){
 generate_MPA_size <- function(n,cum_prob,breaks){
     x <- runif(n,min(cum_prob),1)
     bin <- sapply(x,find_bin,cum_prob)
-    if(bin==0){
-        log_size <- log10(cell_size^2)
-    } else {
-        low_break <- breaks[bin]
-        log_size <- (sapply(low_break,random_between_breaks))
-    }
+    breaks <- c(min(breaks)-0.01,breaks)
+    low_break <- breaks[bin]
+    log_size <- (sapply(low_break,random_between_breaks))
     (10^6)*(10^log_size)
 }
 
 getnearest4 <- function(a) {
-    tail(sort(a,decreasing=T),4)
+    if(length(a)>4){
+        tail(sort(a,decreasing=T),4)
+    } else {
+        tail(sort(a,decreasing=T),length(a))
+    }
 }
 
 
@@ -41,9 +42,9 @@ generate_MPAs <- function(sizes,preexist_polygons,seed_polygons,sprout_polygons,
         # seed for max-dist
         if(type=="MaxDist"){
             pdist <- gDistance(seed_polygons,preexist_polygons,byid=T)
-            pdist2 <- apply(pdist,2,getnearest4)
-            pdist2 <- apply(pdist2,2,mean)          
-            seed <- pdist2==max(pdist2)
+            pdist <- apply(pdist,2,getnearest4)
+            if(length(preexist_polygons)>1) pdist <- apply(pdist,2,mean)          
+            seed <- pdist==max(pdist)
             while(sum(seed)>1) seed[seed==T][round(runif(1,1,length(seed[seed==T])))] <- F
             seed <- which(seed)
         }
@@ -72,8 +73,9 @@ generate_MPAs <- function(sizes,preexist_polygons,seed_polygons,sprout_polygons,
             while(sum(sprout)>1) sprout[sprout==T][round(runif(1,1,length(sprout[sprout==T])))] <- F
             sprout_MPA <- sprout_polygons[sprout,]
             plot(EEZ)
+            plot(preexist_polygons,col="red",add=T)
             plot(new_MPA,col="blue",add=T)
-            plot(sprout_MPA,col="red",add=T)
+            plot(sprout_MPA,col="green",add=T)
             sprout_polygons <- sprout_polygons[-which(sprout),]
             if(sum(gContains(seed_polygons,new_MPA,byid=T))>0){
                 seed_polygons <- seed_polygons[-which(gContains(seed_polygons,new_MPA,byid=T)),]
