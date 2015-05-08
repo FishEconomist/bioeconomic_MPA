@@ -1,21 +1,5 @@
 rm(list=ls())
-#### User input ####
-# total model run time in years (e.g. 2001:2100 would be 100 years)
-time <- 2001:2100
-# time step in years
-dt <- 1
-# cell size in km
-cell_size <- 20
-# default projection
-proj  <- "+proj=lcc +lat_1=40 +lat_2=70 +lat_0=-71.3 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m +no_defs"
-# target protection level in proportion (e.g. 0.2 is 20% protection)
-MPA_coverage <- 0.20
-# coastal:marine ratio (e.g. CtoM <- 0.4 is 60% marine and 40% coastal in terms of area)
-CtoM <- 0.0009422693
-# fixed distance parameters in km
-fixdist <- 200
-# create new protection scenarios?
-protect_scen_new <- T
+source("user_input.R")
 
 #### source custom functions ####
 source("functions.R")

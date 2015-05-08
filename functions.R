@@ -30,7 +30,7 @@ getnearest4 <- function(a) {
 generate_MPAs <- function(sizes,preexist_polygons,seed_polygons,sprout_polygons,cover,EEZ,type,cum_prob,breaks){
     tot_area <- gArea(EEZ)
     MPA_cov_new <- 0
-    MPA_cov_current <- gArea(gIntersection(preexist_polygons,EEZ,byid = T))/tot_area
+    MPA_cov_current <- gArea(gIntersection(preexist_polygons,EEZ,byid = TRUE))/tot_area
     MPA_count <- 0
     while((MPA_cov_current+MPA_cov_new)<cover){
         size <- sizes[MPA_count+1]
@@ -41,20 +41,20 @@ generate_MPAs <- function(sizes,preexist_polygons,seed_polygons,sprout_polygons,
         }
         # seed for max-dist
         if(type=="MaxDist"){
-            pdist <- gDistance(seed_polygons,preexist_polygons,byid=T)
+            pdist <- gDistance(seed_polygons,preexist_polygons,byid=TRUE)
             pdist <- apply(pdist,2,getnearest4)
             if(length(preexist_polygons)>1) pdist <- apply(pdist,2,mean)          
             seed <- pdist==max(pdist)
-            while(sum(seed)>1) seed[seed==T][round(runif(1,1,length(seed[seed==T])))] <- F
+            while(sum(seed)>1) seed[seed==T][round(runif(1,1,length(seed[seed==TRUE])))] <- FALSE
             seed <- which(seed)
         }
         # seed for set distance
         if(is.numeric(type)){
-            pdist <- gDistance(seed_polygons,preexist_polygons,byid=T)
+            pdist <- gDistance(seed_polygons,preexist_polygons,byid=TRUE)
             pdist <- pdist>type*0.75|pdist<type*1.25
             pdist2 <- apply(pdist,2,sum)         
             seed <- pdist2==min(pdist2)
-            while(sum(seed)>1) seed[seed==T][round(runif(1,1,length(seed[seed==T])))] <- F
+            while(sum(seed)>1) seed[seed==TRUE][round(runif(1,1,length(seed[seed==T])))] <- FALSE
             seed <- which(seed)
         }
         
@@ -62,45 +62,69 @@ generate_MPAs <- function(sizes,preexist_polygons,seed_polygons,sprout_polygons,
         seed_area <- gArea(seed_polygons[seed,])
         seed_polygons <- seed_polygons[-seed,]
         if(sum(gContains(sprout_polygons,new_MPA,byid=T))>0){
-            sprout_polygons <- sprout_polygons[-which(gContains(sprout_polygons,new_MPA,byid=T)),]
+            sprout_polygons <- sprout_polygons[-which(gContains(sprout_polygons,new_MPA,byid=TRUE)),]
         }
 #         plot(sprout_polygons)
 #         plot(new_MPA,col="blue",add=T)
         while(seed_area<size){
-            pdist <- gDistance(new_MPA,sprout_polygons,byid=T)
+            pdist <- gDistance(new_MPA,sprout_polygons,byid=TTRUE)
             pdist <- apply(pdist,1,mean)
             sprout <- pdist==min(pdist)
-            while(sum(sprout)>1) sprout[sprout==T][round(runif(1,1,length(sprout[sprout==T])))] <- F
+            while(sum(sprout)>1) sprout[sprout==TRUE][round(runif(1,1,length(sprout[sprout==TRUE])))] <- FALSE
             sprout_MPA <- sprout_polygons[sprout,]
             plot(EEZ)
-            plot(preexist_polygons,col="red",add=T)
-            plot(new_MPA,col="blue",add=T)
-            plot(sprout_MPA,col="green",add=T)
+            plot(preexist_polygons,col="red",add=TRUE)
+            plot(new_MPA,col="blue",add=TRUE)
+            plot(sprout_MPA,col="green",add=TRUE)
             sprout_polygons <- sprout_polygons[-which(sprout),]
             if(sum(gContains(seed_polygons,new_MPA,byid=T))>0){
-                seed_polygons <- seed_polygons[-which(gContains(seed_polygons,new_MPA,byid=T)),]
+                seed_polygons <- seed_polygons[-which(gContains(seed_polygons,new_MPA,byid=TRUE)),]
             }
-            while(gContains(new_MPA,sprout_MPA)==F){
+            while(gContains(new_MPA,sprout_MPA)==FALSE){
                 print("Sprouting - Increasing MPA size")
                 new_MPA <- rbind(new_MPA,sprout_MPA)
                 seed_area <- gArea(new_MPA)
             }
         }
-        while(sum(gContains(preexist_polygons,new_MPA,byid = T))<1){
+        while(sum(gContains(preexist_polygons,new_MPA,byid = TRUE))<1){
             MPA_count <- MPA_count+1
             df <- new_MPA@data[1,]
             new_MPA <- unionSpatialPolygons(new_MPA,rep(1,length(new_MPA)))
-            new_MPA <- SpatialPolygonsDataFrame(new_MPA,df,match.ID = F)
+            new_MPA <- SpatialPolygonsDataFrame(new_MPA,df,match.ID = FALSE)
             new_MPA <- spChFIDs(new_MPA,paste("new",MPA_count))
             seed_area <- gArea(new_MPA)
             MPA_cov_new <- MPA_cov_new + (seed_area/tot_area)
             preexist_polygons <- rbind(preexist_polygons,new_MPA)
             plot(EEZ)
-            plot(preexist_polygons,col="red",add=T)
-            plot(new_MPA,col="blue",add=T)
+            plot(preexist_polygons,col="red",add=TRUE)
+            plot(new_MPA,col="blue",add=TRUE)
             print(paste0("Added new MPA, new percent cover = ",round(MPA_cov_current+MPA_cov_new,4)))
         }
     }
     return(preexist_polygons)
 }
+
+#Von Bertalanffy growth model parameters (Knickle and Rose 2013)
+#Lt = Linf * {1-exp(-k*(t-t0))}, where Lt is length (cm) at age t (year), Linf is the asymptotic length (cm), k is the VB growth coefficient (1/year), and t0 is the x intercept (year). Linf = 112.03 (95% CI = 10.46). k = 0.13 (95% CI = 0.021). t0 = 0.18).
+
+VB_length <- function(t,Linf_mean,Linf_SD,k_mean,k_SD,t0){
+    if(t<t0) {
+        return(0)
+    } else{
+        Linf <- rnorm(1,Linf_mean,Linf_SD)
+        k <- rnorm(1,k_mean,k_SD)
+        Lt  <-  Linf * (1-exp((-k)*(t-t0)))
+        return(Lt) 
+    }
+}
+
+disperse_to_polygon <- function(dispersal_distances,polygon_distance_matrix){
+    disp_mat <- as.matrix(dispersal_distances)%*%rep(1,length(polygon_distance_matrix))
+    pol_mat <- as.matrix(rep(1,length(dispersal_distances)))%*%polygon_distance_matrix
+    diff_mat <- abs(disp_mat-pol_mat)
+    return(apply(diff_mat,1,function(x) sample(which(x==min(x)),1)))
+}
+
+
+
     
