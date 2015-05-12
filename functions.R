@@ -118,13 +118,72 @@ VB_length <- function(t,Linf_mean,Linf_SD,k_mean,k_SD,t0){
     }
 }
 
-disperse_to_polygon <- function(dispersal_distances,polygon_distance_matrix){
-    disp_mat <- as.matrix(dispersal_distances)%*%rep(1,length(polygon_distance_matrix))
-    pol_mat <- as.matrix(rep(1,length(dispersal_distances)))%*%polygon_distance_matrix
-    diff_mat <- abs(disp_mat-pol_mat)
-    return(apply(diff_mat,1,function(x) sample(which(x==min(x)),1)))
+# disperse_to_polygon <- function(dispersal_distances,polygon_distance_matrix){
+#     disp_mat <- as.matrix(dispersal_distances)%*%rep(1,length(polygon_distance_matrix))
+#     pol_mat <- as.matrix(rep(1,length(dispersal_distances)))%*%polygon_distance_matrix
+#     diff_mat <- abs(disp_mat-pol_mat)
+#     dispersed <- apply(diff_mat,1,function(x) sample(which(x==min(x)),1))
+#     return(table(dispersed))
+# }
+
+## General function to take in a lattice and disperse from (http://www.r-bloggers.com/continuous-dispersal-on-a-discrete-lattice/)
+## according to a user provided dispersal kernel
+## Author: Corey Chivers
+## Modified by: Remi Daigle
+disperse_to_polygon <- function(domain_boundaries,pop,kernel,...){
+    lattice_size<-dim(pop)
+    new_pop<-array(0,dim=lattice_size)
+    
+    for(i in 1:lattice_size[1]){
+        for(j in 1:lattice_size[2]){
+            N<-pop[i,j]
+            while(N>0){
+                dist<-kernel(N,...)
+                theta<-runif(N,0,2*pi)
+                x<-cos(theta)*dist
+                y<-sin(theta)*dist
+                for(k in 1:N){
+                    x_ind<-round(i+x[k]) %% lattice_size[1]
+                    y_ind<-round(j+y[k]) %% lattice_size[2]
+                    if(x_ind==0) x_ind <- lattice_size[1]
+                    if(y_ind==0) y_ind <- lattice_size[2]
+                    while(domain_boundaries[x_ind,y_ind]==0){
+                        dist2<-kernel(1,...)
+                        theta2<-runif(1,0,2*pi)
+                        x2<-cos(theta2)*dist2
+                        y2<-sin(theta2)*dist2
+                        x_ind<-round(i+x2) %% lattice_size[1]
+                        y_ind<-round(j+y2) %% lattice_size[2]
+                        if(x_ind==0) x_ind <- lattice_size[1]
+                        if(y_ind==0) y_ind <- lattice_size[2]
+                    }
+                    new_pop[x_ind,y_ind]<-new_pop[x_ind,y_ind]+1
+                    N <- 0
+                } 
+            }
+            
+        }
+    }
+    return(new_pop)
 }
 
-
-
-    
+#Beverton-Holt model for carrying capacity based recruitment mortality, carrying capacity is the mean of North American carrying capacities in Table 3 of Myers et al. 2001 (CC=0.431088 tonnes/km^2 )
+# input larvae, get recruits
+BH_CC_mortality <- function(larvae,fish,CC,CC_sd){
+    R <- sum(larvae$recruit)/(dim(fish)[1])
+    CCs <- rnorm(length(unique(larvae$polygon)),CC,CC_sd)
+    CCs[CCs<=0] <- 0.1
+    fish_table <- as.data.frame(table(fish$polygon))
+    fish_table$Var1 <- as.numeric(fish_table$Var1)
+    larvae$polygon <- as.numeric(larvae$polygon)
+    new_recruits <- sapply(unique(larvae$polygon), function(i) if(length(round(R*fish_table$Freq[fish_table$Var1==i]/(1+fish_table$Freq[fish_table$Var1==i]/CCs[i])))==1){
+        round(R*fish_table$Freq[fish_table$Var1==i]/(1+fish_table$Freq[fish_table$Var1==i]/CCs[i]))
+                                                                        } else {
+                                                                            0
+                                                                        }
+                                                                  )
+    new_recruits <- unlist(new_recruits)
+    new_recruits[is.na(new_recruits)] <- 0
+    return(new_recruits)
+}
+larvae$recruit <- new_recruits    

@@ -6,6 +6,7 @@ larvae <- data.frame(eggs=round(fish$weight[fish$age>=min_age_mat & fish$sex==1]
                      )
 # note: for SEX males=0, females=1
 # summarize per polygon
+require(dplyr)
 larvae <- summarise(group_by(larvae,polygon),eggs=sum(eggs))
 
 # larval mortality
