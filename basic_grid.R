@@ -47,11 +47,25 @@ names(loc_p) <- c("X","Y")
 loc_p$X <- round((loc_p$X-grd@cellcentre.offset[1])/grd@cellsize[1])
 loc_p$Y <- round((loc_p$Y-grd@cellcentre.offset[2])/grd@cellsize[2])
 
+loc_hab <- data.frame(matrix(sapply(1:length(Habitats),function(i) slot(Habitats@polygons[[i]],"labpt")),ncol=2,byrow=TRUE))
+names(loc_hab) <- c("X","Y")
+loc_hab$X <- round((loc_hab$X-grd@cellcentre.offset[1])/grd@cellsize[1])
+loc_hab$Y <- round((loc_hab$Y-grd@cellcentre.offset[2])/grd@cellsize[2])
+
 EEZ_mat <- matrix(0,grd@cells.dim[1],grd@cells.dim[2])
 for(i in 1:grd@cells.dim[1]){
     for(j in 1:grd@cells.dim[2]){
         if(any(loc_p$X==i&loc_p$Y==j)){
             EEZ_mat[i,j] <- which(loc_p$X==i&loc_p$Y==j)
+        }
+    }
+}
+
+hab_mat <- matrix(0,grd@cells.dim[1],grd@cells.dim[2])
+for(i in 1:grd@cells.dim[1]){
+    for(j in 1:grd@cells.dim[2]){
+        if(any(loc_hab$X==i&loc_hab$Y==j)){
+            hab_mat[i,j] <- which(loc_hab$X==i&loc_hab$Y==j)
         }
     }
 }

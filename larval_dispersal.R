@@ -32,7 +32,7 @@ larvae <- larvae[larvae$recruit>0,]
 
 ### recruits not near habitat will die ###
 require(dplyr)
-larvae <- larvae[!(larvae$polygon %in% not_habitat),]
+larvae <- larvae[(larvae$polygon %in% unique(as.vector(hab_mat))),]
 
 
 #### recruitment mortality due to carrying capacity ####

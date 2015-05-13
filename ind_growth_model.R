@@ -9,7 +9,7 @@ if(t==min(time)){
                        sex=round(runif(n*length(p),0,1)),
                        length=0
                        )
-    not_habitat <- c(1:length(p))[!apply(gIntersects(p,Habitats,byid=TRUE),2,any)]
+    #not_habitat <- c(1:length(p))[!apply(gIntersects(p,Habitats,byid=TRUE),2,any)]
     unlink("results/*")
 } else {
     fish$age <- fish$age+dt
@@ -32,7 +32,7 @@ write.csv(fish,paste0("results/fish_",t))
 
 ### fish not near habitat will die ###
 require(dplyr)
-fish <- fish[!(fish$polygon %in% not_habitat),]
+fish <- fish[(fish$polygon %in% unique(as.vector(hab_mat))),]
 
 
 ### natural mortality in habitat ###
