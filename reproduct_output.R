@@ -11,3 +11,5 @@ larvae <- summarise(group_by(larvae,polygon),eggs=sum(eggs))
 
 # larval mortality
 larvae$eggs <- round(larvae$eggs*(1-lM))
+
+print(paste(sum(larvae$eggs),"eggs survive to become competent larvae"))

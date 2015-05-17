@@ -1,24 +1,26 @@
-#### User input ####
+#################################### User input ##############################################
+##
+############################## Basic model parameters ########################################
 # total model run time in years (e.g. 2001:2100 would be 100 years)
-time <- 2001:2003
+time <- 2001:2011
+
 # time step in years
 dt <- 1
+
 # cell size in km
 cell_size <- 20
+
 # default projection
 proj  <- "+proj=lcc +lat_1=40 +lat_2=70 +lat_0=-71.3 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m +no_defs"
-# target protection level in proportion (e.g. 0.2 is 20% protection)
-MPA_coverage <- 0.20
-# coastal:marine ratio (e.g. CtoM <- 0.4 is 60% marine and 40% coastal in terms of area)
-CtoM <- 0.0009422693
-# fixed distance for setting MPA distance in km
-fixdist <- 200
-# create new protection scenarios? (TRUE creates new maps, but is slow. FALSE uses previously saved maps)
-protect_scen_new <- FALSE
+
 # initial number of fish per cell
-n <- 50
+n <- 10
+
 # virtual fish:real fish ratio (e.g. if virtual_fish_ratio=10^6, then 1 virtual fish is 'worth' 10^6 real fish)
-virtual_fish_ratio <- 10^6
+virtual_fish_ratio <- 10^4
+
+
+############################# fish growth and reproduction #######################################
 # #Von Bertalanffy growth model parameters (Knickle and Rose 2013)
 #Lt = Linf * {1-exp(-k*(t-t0))}, where Lt is length (cm) at age t (year), Linf is the asymptotic length (cm), k is the VB growth coefficient (1/year), and t0 is the x intercept (year). Linf = 112.03 (95% CI = 10.46). k = 0.13 (95% CI = 0.021). t0 = 0.18).
 Linf_mean <- 112.03
@@ -32,20 +34,96 @@ l_to_w_int  <- 0.000011
 l_to_w_power <- 2.91
 
 # minimum age at maturity
-min_age_mat <- 2
+min_age_mat <- 5
+
 # Fecundity (size dependent). 0.5 million eggs per kg of female
 fecundity <- 0.5*10^6
 
-#### Mortality ####
+######################### Sources of natural Mortality ##################################
 # natural mortality
 M <- 0.4
+
 # larval mortality
 lM <- 0.9999
-#Beverton-Holt model for carrying capacity based recruitment mortality, carrying capacity is the mean of North American carrying capacities in Table 3 of Myers et al. 2001 (CC=0.431088 tonnes/km^2 SD=0.386696)
+
+# Beverton-Holt model for carrying capacity based recruitment mortality, carrying capacity is the mean of North American carrying capacities in Table 3 of Myers et al. 2001 (CC=0.431088 tonnes/km^2 SD=0.386696)
 CC <- 0.431088*1000*(cell_size^2)/virtual_fish_ratio
 CC_sd <- 0.386696*1000*(cell_size^2)/virtual_fish_ratio
 
+
+########################### Dispersal ##################################################
 # larval dispersal kernels are assumed to be exponential, e_fold_larvae is the e folding scale in km (the distance at which there will be fewer settlers by a factor of e). We assume that scale to be 2cm/s*90d (avg current velocity * PLD)
 e_fold_larvae <- 2/100000*60*60*24*90
+
 # adult dispersal kernels are also assumed to be exponential, e_fold_adult (in km) was calculated from data in Lawson & Rose 2000
 e_fold_adult  <- 74.139
+
+###################### Fisherman behaviour #############################################
+# specify spatial distribution of fish_licenses for shore distance calculation in effort calculation
+# can be spatial points or spatial polygons data frame (sp package)
+require(raster)
+require(rgeos)
+fish_communities <- getData('GADM', country="CAN", level=1) # provinces
+fish_communities <- fish_communities[fish_communities$NAME_1=="New Brunswick"|
+                                         fish_communities$NAME_1=="Newfoundland and Labrador"|
+                                         fish_communities$NAME_1=="Nova Scotia"|
+                                         fish_communities$NAME_1=="Prince Edward Island"|
+                                         fish_communities$ID_1==11,]    # this means Quebec, the accent make bad things happen when formatting
+# fish_communities <- getBigPolys(gSimplify(fish_communities,tol=0.05,topologyPreserve = T))
+fish_communities2 <-gSimplify(fish_communities,tol=0.05,topologyPreserve = T)
+
+########################## Fisheries Management ########################################
+# number of licenses per region in fish_communities
+fish_licenses <- c(866, 4714, 3002, 879, 963)
+
+# fisheries mortality at Maximum Sustainable Yield
+FMSY <- 0.28
+
+# quota set to fraction of FMSY as per precautionary principle 
+FMSY_buffer <- 2/3
+
+#percent of population measured for biomass estimation (0.001 = 0.1%)
+sampling_pop <- 0.001 
+
+#minimum size caught by nets (cm) from Feekings et al. 2013
+min_size <- 38 
+
+# target protection level in proportion (e.g. 0.2 is 20% protection)
+MPA_coverage <- 0.20
+
+# coastal:marine ratio for MPAs (e.g. CtoM <- 0.4 is 60% marine and 40% coastal in terms of area)
+CtoM <- 0.0009422693
+
+# fixed distance for setting MPA distance in km in fixed distance scenario
+fixdist <- 200
+
+# create new protection scenarios? (TRUE creates new maps, but is slow. FALSE uses previously saved maps) 
+# very computationally expensive if TRUE
+protect_scen_new <- FALSE
+
+# protection scenarios to include in analysis current options include "Status_quo","MPAs_maxdist","MPAs_fixed","MPAs_targeted"
+# see protection_scenarios.R and functions.R for more information on protection scenarios
+protect_scen <- c("Status_quo","MPAs_maxdist","MPAs_fixed","MPAs_targeted")
+
+# country name for coastline download for new "coastal" MPA placement (from package maptools in data(wrld_simpl))
+country_name  <- "Canada"
+
+#### load pre-existing MPAs (shapefiles generated by MPA_size.R) ####
+require(rgdal)
+MPAs_coast <- readOGR(dsn=getwd(),layer="MPAs_coast")
+MPAs_mar <- readOGR(dsn=getwd(),layer="MPAs_mar")
+EEZ <- readOGR(dsn=getwd(),layer="eez_iho_union_v2")
+
+# remove Canadian part of the Davis Strait for EEZ
+EEZ <- EEZ[EEZ$marregion!="Canadian part of the Davis Strait",]
+
+#### load DFO Area of Interest ####
+# shapefile generated by georeferencing map images
+# Maps downloaded from http://www.dfo-mpo.gc.ca/oceans/marineareas-zonesmarines/mpa-zpm/index-eng.htm
+# MPAs_AOI <- readOGR(dsn=getwd(),layer="DFO_AreaOfInterest")
+# MPAs_AOI <- spTransform(MPAs_AOI,CRS(proj))
+
+#### load cod habitat and breeding sites ####
+# shapefile generated by georeferencing figure 2 from Lough 2004
+Habitats <- readOGR(dsn=getwd(),layer="cod_habitat")
+Breeding <- readOGR(dsn=getwd(),layer="cod_breeding")
