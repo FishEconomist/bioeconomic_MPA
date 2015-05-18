@@ -8,7 +8,7 @@ require(rgdal)
 require(maptools)
 
 
-EEZ <- readOGR(dsn="D:/WDPA_Mar2015_Public",layer="eez_iho_union_v2")
+#EEZ <- readOGR(dsn="D:/WDPA_Mar2015_Public",layer="eez_iho_union_v2")
 EEZ <- spTransform(EEZ,CRS(proj))
 EEZ <- EEZ[EEZ$marregion!="Canadian part of the Davis Strait",]
 EEZ <- unionSpatialPolygons(EEZ,rep(1,length(EEZ)))

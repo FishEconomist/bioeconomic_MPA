@@ -7,7 +7,7 @@ require(dplyr)
 if(t==min(time)){
     fish_communities2 <- spTransform(fish_communities2,CRS(proj))
     distance_from_shore <- gDistance(fish_communities2,p,byid=TRUE)
-    distance_from_shore <- distance_from_shore/max(distance_from_shore)
+    distance_from_shore <- distance_from_shore/mean(distance_from_shore)
 } 
 catch <- NULL
 
@@ -15,7 +15,7 @@ fishers <- sample(rep(1:length(fish_communities),fish_licenses))
 
 while(sum(catch$weight,na.rm=TRUE)*virtual_fish_ratio/1000<FMSY*FMSY_buffer*biomass_est){
     biomass_mat <- summarise(group_by(fish,polygon),tot_weight=sum(weight))
-    biomass_mat$tot_weight <- biomass_mat$tot_weight/max(biomass_mat$tot_weight)
+    biomass_mat$tot_weight <- biomass_mat$tot_weight/CC
     if(any(!(unique(as.vector(hab_mat[hab_mat>=1])) %in% biomass_mat$polygon))){
         biomass_mat <- rbind(biomass_mat,data.frame(polygon=which(!(unique(as.vector(hab_mat[hab_mat>=1])) %in% biomass_mat$polygon)),tot_weight=0))
     }
@@ -42,10 +42,17 @@ while(sum(catch$weight,na.rm=TRUE)*virtual_fish_ratio/1000<FMSY*FMSY_buffer*biom
 write.csv(fish,paste0("results/",scenario,"_fish_",t,".csv"))
 write.csv(catch,paste0("results/",scenario,"_catch_",t,".csv"))
 
-
+par(mfrow = c(2,1))
 biomass_mat <- matrix(0,grd@cells.dim[1],grd@cells.dim[2])
 for(poly in unique(fish$polygon)){
     biomass_mat[which(hab_mat==poly,arr.ind=TRUE)] <- sum(fish$weight[fish$polygon==poly])
 }
-image(log(biomass_mat),zlim=c(-4,6))
-title(paste(scenario,t))
+image(log(biomass_mat))
+title(paste('biomass',scenario,t))
+
+catch_mat <- matrix(0,grd@cells.dim[1],grd@cells.dim[2])
+for(poly in unique(fish$polygon)){
+    catch_mat[which(hab_mat==poly,arr.ind=TRUE)] <- sum(catch$weight[catch$polygon==poly])
+}
+image(log(catch_mat))
+title(paste('catch',scenario,t))

@@ -35,10 +35,10 @@ for(scenario in protect_scen){
 }
 ############################# End scenario loops ###################################################
 #### Cost evaluation ####
-# MPA implementation and enforcement
-source("MPA_impl_enforcement.R")
 # Value of fish catches over time
 source("fish_value.R")
+# MPA implementation and enforcement
+source("MPA_impl_enforcement.R")
 # Social discount rate
 source("social_discount.R")
 

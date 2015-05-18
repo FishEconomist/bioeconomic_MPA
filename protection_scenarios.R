@@ -29,8 +29,8 @@ EEZ <- unionSpatialPolygons(EEZ,rep(1,length(EEZ)))
 
 Habitats <- spTransform(Habitats,CRS(proj))
 Breeding <- spTransform(Breeding,CRS(proj))
-Breeding <- gIntersection(EEZ,Breeding,byid=T, drop_not_poly=TRUE)
-# Habitats <- gIntersection(p,Habitats,byid=T, drop_not_poly=TRUE)
+Breeding <- gIntersection(EEZ,Breeding,byid=T, drop_lower_td=TRUE)
+# Habitats <- gIntersection(p,Habitats,byid=T, drop_lower_td=TRUE)
 Habitats <- p[!is.na(over(p,Habitats)),]
 plot(Habitats)
 
@@ -48,6 +48,9 @@ MPAs_mar <- spChFIDs(MPAs_mar,paste("mar",c(1:length(MPAs_mar))))
 
 #### rbind MPAs ####
 MPAs <- rbind(MPAs_mar,MPAs_coast)
+rm(MPAs_coast)
+rm(MPAs_mar)
+
 # MPAs <- rbind(MPAs,MPAs_AOI)
 
 # remove Canadian part of the Davis Strait for MPA
@@ -178,29 +181,32 @@ if(protect_scen_new){
 #### plots ####
 if("MPAs_random" %in% protect_scen){
     plot(EEZ)
-    plot(MPAs_random,col="pink",add=T)
+    plot(MPAs_random,col=protect_scen_colour[protect_scen=="MPAs_random"],add=T)
     title("Random")
 }
 if("Status_quo" %in% protect_scen){
    plot(EEZ)
-    plot(MPAs,col="yellow",add=T)
+    plot(MPAs,col=protect_scen_colour[protect_scen=="Status_quo"],add=T)
     title("Status-quo")
 }
 if("MPAs_maxdist" %in% protect_scen){
     plot(EEZ)
-    plot(MPAs_maxdist,col="green",add=T)
+    plot(MPAs_maxdist,col=protect_scen_colour[protect_scen=="MPAs_maxdist"],add=T)
     title("Max-Dist")
 }
 if("MPAs_fixed" %in% protect_scen){
     plot(EEZ)
-    plot(MPAs_fixed,col="red",add=T)
+    plot(MPAs_fixed,col=protect_scen_colour[protect_scen=="MPAs_fixed"],add=T)
     title("Fixed-Dist")
 }
 if("MPAs_targeted" %in% protect_scen){
     plot(EEZ)
-    plot(MPAs_targeted,col="blue",add=T)
+    plot(MPAs_targeted,col=protect_scen_colour[protect_scen=="MPAs_targeted"],add=T)
     title("Targeted MPAs")
 }
+
+Status_quo <- MPAs
+
 #### determine polygon locations for dispersal process ####
 loc_breeding <- data.frame(matrix(sapply(1:length(Breeding),function(i) slot(Breeding@polygons[[i]],"labpt")),ncol=2,byrow=TRUE))
 names(loc_breeding) <- c("X","Y")

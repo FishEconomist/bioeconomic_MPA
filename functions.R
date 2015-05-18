@@ -208,3 +208,7 @@ getBigPolys <- function(poly, minarea=0.01) {
     }
     return(poly)
 }
+
+SDR_value <- function(t0,t,value,i){
+    value*(1/(1+SDR[i])^(t-t0))
+}
