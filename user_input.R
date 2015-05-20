@@ -2,7 +2,7 @@
 ##
 ############################## Basic model parameters ########################################
 # total model run time in years (e.g. 2001:2100 would be 100 years)
-time <- 2001:2101
+time <- 2001:2051
 
 # time step in years
 dt <- 1
@@ -33,17 +33,17 @@ t0 <- 0.18
 l_to_w_int  <- 0.000011
 l_to_w_power <- 2.91
 
-# minimum age at maturity
+# minimum age at maturity (REF)
 min_age_mat <- 5
 
 # Fecundity (size dependent). 0.5 million eggs per kg of female
 fecundity <- 0.5*10^6
 
 ######################### Sources of natural Mortality ##################################
-# natural mortality
+# natural mortality (Mountain et al. 2008)
 M <- 0.4
 
-# larval mortality
+# larval mortality (Mountain et al. 2008)
 lM <- 0.9999
 
 # Beverton-Holt model for carrying capacity based recruitment mortality, carrying capacity is the mean of North American carrying capacities in Table 3 of Myers et al. 2001 (CC=0.431088 tonnes/km^2 SD=0.386696)
@@ -76,14 +76,14 @@ fish_communities2 <-gSimplify(fish_communities,tol=0.05,topologyPreserve = T)
 # number of licenses per region in fish_communities
 fish_licenses <- c(866, 4714, 3002, 879, 963)
 
-# fisheries mortality at Maximum Sustainable Yield
+# fisheries mortality at Maximum Sustainable Yield (Mountain et al. 2008)
 FMSY <- 0.28
 
 # quota set to fraction of FMSY as per precautionary principle 
-FMSY_buffer <- 2/3
+FMSY_buffer <- 1
 
 #percent of population measured for biomass estimation (0.001 = 0.1%)
-sampling_pop <- 0.001 
+sampling_pop <- 0.0005 
 
 #minimum size caught by nets (cm) from Feekings et al. 2013
 min_size <- 38 
@@ -95,7 +95,7 @@ MPA_coverage <- 0.20
 CtoM <- 0.0009422693
 
 # fixed distance for setting MPA distance in km in fixed distance scenario
-fixdist <- 200
+fixdist <- 75
 
 # create new protection scenarios? (TRUE creates new maps, but is slow. FALSE uses previously saved maps) 
 # very computationally expensive if TRUE
@@ -131,8 +131,6 @@ Habitats <- readOGR(dsn=getwd(),layer="cod_habitat")
 Breeding <- readOGR(dsn=getwd(),layer="cod_breeding")
 
 ########################################### cost evaluation ##############################################
-# ratio of fishery that is cod (eliminates portion of "operating expense" due to other species) values from http://www.dfo-mpo.gc.ca/stats/commercial/land-debarq/sea-maritimes/s2001av-eng.htm
-cod_ratio <- 58459/179048 # $ of cod/$ total for all species
 # normal operating cost ($) per fisherman from (Department of Fisheries and Oceans, 2007, Table A.19 Mixed Fishery Fleet) 
 # labour ($46587) and fuel ($9008) vary with distance, the remainder does not
 fish_operating_cost_ratio <- (46587+9008)/105054 # (labour+fuel)/total

@@ -67,7 +67,7 @@ generate_MPAs <- function(sizes,preexist_polygons,seed_polygons,sprout_polygons,
 #         plot(sprout_polygons)
 #         plot(new_MPA,col="blue",add=T)
         while(seed_area<size){
-            pdist <- gDistance(new_MPA,sprout_polygons,byid=TTRUE)
+            pdist <- gDistance(new_MPA,sprout_polygons,byid=TRUE)
             pdist <- apply(pdist,1,mean)
             sprout <- pdist==min(pdist)
             while(sum(sprout)>1) sprout[sprout==TRUE][round(runif(1,1,length(sprout[sprout==TRUE])))] <- FALSE

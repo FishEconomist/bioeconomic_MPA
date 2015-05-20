@@ -75,6 +75,14 @@ df <- df[rep(1,length(Habitats)),]
 Habitats <- SpatialPolygonsDataFrame(Habitats,df,match.ID = F)
 Habitats <- spChFIDs(Habitats,paste("hab",c(1:length(Habitats))))
 
+#### match dataframe for Breeding ####
+df <- MPAs@data[1,]
+df[,sapply(df, is.numeric)] <- 0
+df[,sapply(df, is.numeric)==F] <- NA
+df <- df[rep(1,length(Breeding)),]
+Breeding <- SpatialPolygonsDataFrame(Breeding,df,match.ID = F)
+Breeding <- spChFIDs(Breeding,paste("hab",c(1:length(Breeding))))
+
 #### make Canada (land) polygon for placement of coastal MPAs ####
 data(wrld_simpl)
 Canada <- wrld_simpl[wrld_simpl$NAME==country_name, ]

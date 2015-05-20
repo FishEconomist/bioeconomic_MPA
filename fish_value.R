@@ -71,5 +71,5 @@ for(scenario in protect_scen){
 }
 abline(a=1,b=0) #add break even line
 axis(1);axis(2)
-title(xlab='Time',ylab='Total catch value (USD)')
+title(xlab='Time',ylab='Total catch net value (USD)')
 
