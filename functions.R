@@ -4,10 +4,12 @@ find_bin <- function(x,cum_prob){
     (which.min(abs(cum_prob-x)))[1]
 }
 
+#picks a random number between the breaks
 random_between_breaks <- function(x){
     runif(1,x,x+0.1)
 }
 
+# generates a vector of randomly selected sizes
 generate_MPA_size <- function(n,cum_prob,breaks){
     x <- runif(n,min(cum_prob),1)
     bin <- sapply(x,find_bin,cum_prob)
@@ -17,6 +19,7 @@ generate_MPA_size <- function(n,cum_prob,breaks){
     (10^6)*(10^log_size)
 }
 
+# gets the nearest 4 neighbours
 getnearest4 <- function(a) {
     if(length(a)>4){
         tail(sort(a,decreasing=T),4)
@@ -26,7 +29,7 @@ getnearest4 <- function(a) {
 }
 
 
-# protection scenario type "Random", "MaxDist", or numeric value for set distance
+# generates SpatialPolygonsDataframe object that represents protection scenario type "Random", "Status_quo","MPAs_maxdist","MPAs_fixed","MPAs_targeted"
 generate_MPAs <- function(sizes,preexist_polygons,seed_polygons,sprout_polygons,cover,EEZ,type,cum_prob,breaks){
     tot_area <- gArea(EEZ)
     MPA_cov_new <- 0
@@ -118,13 +121,6 @@ VB_length <- function(t,Linf_mean,Linf_SD,k_mean,k_SD,t0){
     }
 }
 
-# disperse_to_polygon <- function(dispersal_distances,polygon_distance_matrix){
-#     disp_mat <- as.matrix(dispersal_distances)%*%rep(1,length(polygon_distance_matrix))
-#     pol_mat <- as.matrix(rep(1,length(dispersal_distances)))%*%polygon_distance_matrix
-#     diff_mat <- abs(disp_mat-pol_mat)
-#     dispersed <- apply(diff_mat,1,function(x) sample(which(x==min(x)),1))
-#     return(table(dispersed))
-# }
 
 ## General function to take in a lattice and disperse from (http://www.r-bloggers.com/continuous-dispersal-on-a-discrete-lattice/)
 ## according to a user provided dispersal kernel
@@ -187,6 +183,7 @@ BH_CC_mortality <- function(larvae,fish,CC,CC_sd){
     return(new_recruits)
 }
 
+# returns only the biggest polygons
 getBigPolys <- function(poly, minarea=0.01) {
     # Get the areas
     areas <- lapply(poly@polygons, 
@@ -209,6 +206,7 @@ getBigPolys <- function(poly, minarea=0.01) {
     return(poly)
 }
 
+# calculates socially discounted values
 SDR_value <- function(t0,t,value,i){
     value*(1/(1+SDR[i])^(t-t0))
 }

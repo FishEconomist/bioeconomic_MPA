@@ -71,7 +71,18 @@ if(biomass>minimum_fishable_biomass){
     title("e^x tonnes") 
 } else {
     write.csv(fish,paste0("results/",scenario,"_fish_",t,".csv"))
-    catch <- NULL
+    catch <- data.frame(age=NA,polygon=NA,sex=NA,length=NA,weight=NA)
     write.csv(catch,paste0("results/",scenario,"_catch_",t,".csv"))
 }
 
+# break for loop and write empty files if extinct
+if(length(row.names(fish))==0){
+    print("WARNING: TOTAL EXTINCTION!")
+    for(i in t:max(time)){
+        catch <- data.frame(age=NA,polygon=NA,sex=NA,length=NA,weight=NA)
+        fish <- data.frame(age=NA,polygon=NA,sex=NA,length=NA,weight=NA)
+        write.csv(fish,paste0("results/",scenario,"_fish_",i,".csv"))
+        write.csv(catch,paste0("results/",scenario,"_catch_",i,".csv")) 
+    }
+    break
+}
