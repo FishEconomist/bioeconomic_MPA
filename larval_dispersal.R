@@ -40,6 +40,6 @@ BH_CC_mortality(larvae,fish,CC,CC_sd)
 larvae$recruit <- BH_CC_mortality(larvae,fish,CC,CC_sd)
 larvae <- larvae[larvae$recruit>0,]
 
-recruits <- unlist(sapply(unique(larvae$polygon), function(i) rep(i,larvae$recruit[larvae$polygon==i]) ))
+recruits <- as.vector(unlist(sapply(unique(larvae$polygon), function(i) rep(i,larvae$recruit[larvae$polygon==i]) )))
 
 print(paste(length(recruits),"new recruits to be added to population in",t+1))
