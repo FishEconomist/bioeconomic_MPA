@@ -121,6 +121,13 @@ VB_length <- function(t,Linf_mean,Linf_SD,k_mean,k_SD,t0){
     }
 }
 
+# sexual maturity based on logistic probability, output is logical
+egg_producer <- function(ages,sex,steepness,sigmoid){
+    female <- sex==1
+    sexually_mature <- 1/(1+exp(-steepness*(ages-sigmoid)))>runif(length(ages),0,1)
+    return(female&sexually_mature)
+}
+
 
 ## General function to take in a lattice and disperse from (http://www.r-bloggers.com/continuous-dispersal-on-a-discrete-lattice/)
 ## according to a user provided dispersal kernel

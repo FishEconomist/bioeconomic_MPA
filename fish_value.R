@@ -7,7 +7,7 @@ catch <- NULL
 fish <- NULL
 for(scenario in protect_scen){    
     for(t in time){
-        temp <- read_csv(paste0("results/",scenario,"_catch_",t,".csv"))
+        temp <- read.csv(paste0("results/",scenario,"_catch_",t,".csv"))
         temp$time <- t
         temp$scenario <- scenario
         catch <- rbind(temp,catch)

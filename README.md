@@ -18,8 +18,8 @@ _time_| 2001:2100| The time over which the model is run (e.g. 2001 to 2100)| use
 _dt_| 1| The time step in years| user defined
 _cell_size_| 20| The height and width of the model cell size in km| user defined
 _proj_| "+proj=lcc ... +units=m +no_defs"|The map projection to be used, must comply with [PROJ.4 CRS](http://www.inside-r.org/packages/cran/sp/docs/CRS)| user defined
-_n_| 10| The number of virtual fish per cell at initialization | user defined
-_virtual_fish_ratio_| 5000| The virtual fish:real fish ratio (e.g. if virtual_fish_ratio=10^6, then 1 virtual fish is 'worth' 10^6 real fish)| user defined
+_n_| 50| The number of virtual fish per cell at initialization | user defined
+_virtual_fish_ratio_| 1000| The virtual fish:real fish ratio (e.g. if virtual_fish_ratio=10^6, then 1 virtual fish is 'worth' 10^6 real fish)| user defined
 _Linf_mean_|112.03| Von Bertalanffy growth model parameter - mean asymptotic length (cm) | Knickle and Rose 2013
 _Linf_SD_ |5.34 |Von Bertalanffy growth model parameter - standard deviation asymptotic length (cm) | Knickle and Rose 2013
 _k_mean_| 0.13|Von Bertalanffy growth model parameters - mean growth coefficient (1/year)| Knickle and Rose 2013
@@ -27,7 +27,8 @@ _k_SD_|0.1 |Von Bertalanffy growth model parameters - standard deviation growth 
 _t0_|0.18|Von Bertalanffy growth model parameters - x intercept (year) | Knickle and Rose 2013
 _l_to_w_int_| 1| The time step in years| Knickle and Rose 2013
 _l_to_w_power_| 1| The time step in years| Knickle and Rose 2013
-_min_age_mat_| 5 | Age at sexual maturity | REF
+_age_mat_steepness_| 2.5 | Steepness of the logitic curve for age at sexual maturity. Fish begin maturing at 2 y, 50% at 4 y and all are mature at 6y | user defined
+_age_mat_sigmoid_| 4 | Sigmoid of the logitic curve for age at sexual maturity. Fish begin maturing at 2 y, 50% at 4 y and all are mature at 6y | user defined
 _fecundity_| 0.5*10^6 | Size dependent fecundity (eggs per kg of female)| REF
 _M_| 0.4| Natural adult mortality | Mountain et al. 2008
 _lM_| 0.9999| Natural larval mortality | Mountain et al. 2008

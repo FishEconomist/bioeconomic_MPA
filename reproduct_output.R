@@ -1,8 +1,9 @@
 #### Growth and Reproduction ####
 # Reproductive output
 print("Now calculating: Reproductive output")
-larvae <- data.frame(eggs=round(fish$weight[fish$age>=min_age_mat & fish$sex==1]*fecundity),
-                     polygon=fish$polygon[fish$age>=min_age_mat & fish$sex==1]
+eggers <- egg_producer(fish$age,fish$sex,age_mat_steepness,age_mat_sigmoid)
+larvae <- data.frame(eggs=round(fish$weight[eggers]*fecundity),
+                     polygon=fish$polygon[eggers]
                      )
 # note: for SEX males=0, females=1
 # summarize per polygon
@@ -13,3 +14,4 @@ larvae <- summarise(group_by(larvae,polygon),eggs=sum(eggs))
 larvae$eggs <- round(larvae$eggs*(1-lM))
 
 print(paste(sum(larvae$eggs),"eggs survive to become competent larvae"))
+egg_producer(fish$age,fish$sex,age_mat_steepness,age_mat_sigmoid)

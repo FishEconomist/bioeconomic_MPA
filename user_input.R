@@ -14,10 +14,10 @@ cell_size <- 20
 proj  <- "+proj=lcc +lat_1=40 +lat_2=70 +lat_0=-71.3 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m +no_defs"
 
 # initial number of fish per cell
-n <- 10
+n <- 50
 
 # virtual fish:real fish ratio (e.g. if virtual_fish_ratio=10^6, then 1 virtual fish is 'worth' 10^6 real fish)
-virtual_fish_ratio <- 5000
+virtual_fish_ratio <- 1000
 
 
 ############################# fish growth and reproduction #######################################
@@ -33,8 +33,10 @@ t0 <- 0.18
 l_to_w_int  <- 0.000011
 l_to_w_power <- 2.91
 
-# minimum age at maturity (REF)
-min_age_mat <- 5
+# minimum age at maturity logistic equation
+age_mat_steepness <- 2.5
+age_mat_sigmoid <- 4
+
 
 # Fecundity (size dependent). 0.5 million eggs per kg of female
 fecundity <- 0.5*10^6
@@ -83,7 +85,7 @@ FMSY <- 0.28
 FMSY_buffer <- 2/3
 
 #percent of population measured for biomass estimation (0.001 = 0.1%)
-sampling_pop <- 0.0008 
+sampling_pop <- 0.001 
 
 #minimum size caught by nets (cm) from Feekings et al. 2013
 min_size <- 38 
