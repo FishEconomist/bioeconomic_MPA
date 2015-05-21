@@ -15,8 +15,9 @@ if(biomass>minimum_fishable_biomass){
     fishers <- sample(rep(1:length(fish_communities),fish_licenses))
     
     while(sum(catch$weight,na.rm=TRUE)*virtual_fish_ratio/1000<FMSY*FMSY_buffer*biomass_est){
-        
-        biomass_mat <- summarise(group_by(fish[fish$length>min_size,],polygon),tot_weight=(sum(weight)/1000*virtual_fish_ratio))
+        fish_catchable <- fish[fish$length>min_size,]
+        fish_catchable <- fish_catchable[fish_catchable$polygon %in% fishable,]
+        biomass_mat <- summarise(group_by(fish_catchable,polygon),tot_weight=(sum(weight)/1000*virtual_fish_ratio))
         biomass_mat$tot_weight <- log(biomass_mat$tot_weight+1)/log(max(biomass_mat$tot_weight)+1)
         if(any(!(unique(as.vector(hab_mat[hab_mat>=1])) %in% biomass_mat$polygon))){
             biomass_mat <- rbind(biomass_mat,data.frame(polygon=which(!(unique(as.vector(hab_mat[hab_mat>=1])) %in% biomass_mat$polygon)),tot_weight=0))
@@ -24,8 +25,8 @@ if(biomass>minimum_fishable_biomass){
         index <- sample(fishers,length(fishers),replace=TRUE)
         for(i in unique(index)){
             effort <- (1-biomass_mat$tot_weight)*(distance_from_shore[biomass_mat$polygon,i]) #calculate relative effort
-            effort <- round(effort,1)                                                         #allow for 10% 'error'
-            effort[fishable_mat] <- Inf
+            effort <- round(effort,1)            #allow for 10% 'error'
+            effort[biomass_mat$tot_weight==0] <- Inf
             catch_ID <- names(which(min(effort)==effort))
             catch_ID <- fish$polygon %in% as.numeric(substr(catch_ID,3,nchar(catch_ID)))
             net <- sum(index==i)
@@ -41,6 +42,7 @@ if(biomass>minimum_fishable_biomass){
     }
     
     # write fish and catch to results folder
+    if(length(catch)<1) catch <- data.frame(age=NA,polygon=NA,sex=NA,length=NA,weight=NA)
     write.csv(fish,paste0("results/",scenario,"_fish_",t,".csv"))
     write.csv(catch,paste0("results/",scenario,"_catch_",t,".csv"))
     
@@ -86,3 +88,4 @@ if(length(row.names(fish))==0){
     }
     break
 }
+

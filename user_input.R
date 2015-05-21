@@ -52,7 +52,7 @@ CC_sd <- 0.386696*1000*(cell_size^2)/virtual_fish_ratio
 
 
 ########################### Dispersal ##################################################
-# larval dispersal kernels are assumed to be exponential, e_fold_larvae is the e folding scale in km (the distance at which there will be fewer settlers by a factor of e). We assume that scale to be 2cm/s*90d (avg current velocity * PLD)
+# larval dispersal kernels are assumed to be exponential, e_fold_larvae is the e folding scale in km (the distance at which there will be fewer settlers by a factor of e). We assume that scale to be 2cm/s*90d (avg current velocity * PLD) 
 e_fold_larvae <- 2/100000*60*60*24*90
 
 # adult dispersal kernels are also assumed to be exponential, e_fold_adult (in km) was calculated from data in Lawson & Rose 2000
@@ -83,7 +83,7 @@ FMSY <- 0.28
 FMSY_buffer <- 2/3
 
 #percent of population measured for biomass estimation (0.001 = 0.1%)
-sampling_pop <- 0.0005 
+sampling_pop <- 0.0008 
 
 #minimum size caught by nets (cm) from Feekings et al. 2013
 min_size <- 38 
