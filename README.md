@@ -36,6 +36,7 @@ _CC_| 34.49 | The mean carrying capacity for Canadian cod stocks (t of virtual f
 _CC_sd_| 30.94 | The standard deviation of carrying capacity for Canadian cod stocks (t of virtual fish/cell)| Myers et al. 2001
 _e_fold_larvae_| 155.52 | The e-folding scale for larvae in km (the distance at which there will be fewer settlers by a factor of e). Estimated from linear extrapolation of 2 cm/s over 90 d planktonic larval duration| Brander and Hurley 1992
 _e_fold_adult_| 74.139| The e-folding scale for larvae in km (the distance at which there will be fewer settlers by a factor of e). Estimated from dispersal data | Lawson & Rose 2000
+_min_size_migration_| cm| Minimium size for adult migration (cm) | Lawson & Rose 2000
 _fish_communities_| SpatialPolygonsDataFrame | The spatial distribution of fish_licenses for shore distance calculation in effort calculation. It can be spatial points or spatial polygons data frame (sp package)| raster package
 _fish_communities2_| SpatialPolygonsDataFrame | Same as above, but polygons are simplified to speed up calculation| user defined
 _fish_licenses_| c(866, 4714, 3002, 879, 963)| Number of licenses per region in fish_communities | [DFO](http://www.dfo-mpo.gc.ca/stats/commercial/licences-permis/licences-permis-atl-eng.htm)

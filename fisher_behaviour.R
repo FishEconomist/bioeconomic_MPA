@@ -52,7 +52,7 @@ if(biomass>minimum_fishable_biomass){
     for(poly in unique(fish$polygon)){
         biomass_mat[which(hab_mat==poly,arr.ind=TRUE)] <- sum(fish$weight[fish$polygon==poly&fish$length>min_size])
     }
-    zlim=c(-5,10)
+    zlim=c(-3,6)
     image(log(biomass_mat),axes=FALSE,zlim=zlim,col=rev(heat.colors(12)));box()
     title(paste('biomass',scenario,t))
     par(mar=c(1,1,3,1))

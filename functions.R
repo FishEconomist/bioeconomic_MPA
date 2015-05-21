@@ -133,6 +133,7 @@ egg_producer <- function(ages,sex,steepness,sigmoid){
 ## according to a user provided dispersal kernel
 ## Author: Corey Chivers
 ## Modified by: Remi Daigle
+# used for larvae as is, wrapper function below for adults (adult_disperse)
 disperse_to_polygon <- function(domain_boundaries,pop,kernel,...){
     lattice_size<-dim(pop)
     new_pop<-array(0,dim=lattice_size)
@@ -169,6 +170,22 @@ disperse_to_polygon <- function(domain_boundaries,pop,kernel,...){
     }
     return(new_pop)
 }
+
+# adult dispersal wrapper function
+adult_disperse <- function(fish,poly,min_size_migration,hab_mat,pop_mat){
+    temp_fish <- fish[fish$length>min_size_migration,]
+    pop_mat <- matrix(0,grd@cells.dim[1],grd@cells.dim[2])
+    pop_mat[which(hab_mat==poly,arr.ind=TRUE)] <- length(temp_fish$polygon)
+    pop_mat <- disperse_to_polygon(hab_mat,pop_mat,rexp,rate=1/e_fold_adult)
+    if(dim(temp_fish)[1]==1){
+        temp_fish$polygon <- hab_mat[which(pop_mat>0,arr.ind=TRUE)]
+    } else {
+        temp_fish$polygon <- sample(rep(hab_mat[which(pop_mat>0,arr.ind=TRUE)],pop_mat[which(pop_mat>0,arr.ind=TRUE)]))
+    }
+    fish[fish$length>min_size_migration,] <- temp_fish
+    return(fish)
+}
+
 
 #Beverton-Holt model for carrying capacity based recruitment mortality, carrying capacity is the mean of North American carrying capacities in Table 3 of Myers et al. 2001 (CC=0.431088 tonnes/km^2 )
 # input larvae, get recruits

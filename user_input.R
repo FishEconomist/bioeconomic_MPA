@@ -14,10 +14,10 @@ cell_size <- 20
 proj  <- "+proj=lcc +lat_1=40 +lat_2=70 +lat_0=-71.3 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m +no_defs"
 
 # initial number of fish per cell
-n <- 50
+n <- 10
 
 # virtual fish:real fish ratio (e.g. if virtual_fish_ratio=10^6, then 1 virtual fish is 'worth' 10^6 real fish)
-virtual_fish_ratio <- 1000
+virtual_fish_ratio <- 20000
 
 
 ############################# fish growth and reproduction #######################################
@@ -55,10 +55,12 @@ CC_sd <- 0.386696*1000*(cell_size^2)/virtual_fish_ratio
 
 ########################### Dispersal ##################################################
 # larval dispersal kernels are assumed to be exponential, e_fold_larvae is the e folding scale in km (the distance at which there will be fewer settlers by a factor of e). We assume that scale to be 2cm/s*90d (avg current velocity * PLD) 
-e_fold_larvae <- 2/100000*60*60*24*90
+e_fold_larvae <- sqrt(2/100000*60*60*24*90)
 
 # adult dispersal kernels are also assumed to be exponential, e_fold_adult (in km) was calculated from data in Lawson & Rose 2000
 e_fold_adult  <- 74.139
+# minimium size for adult migration (cm) Lawson & Rose 2000
+min_size_migration <- 50
 
 ###################### Fisherman behaviour #############################################
 # specify spatial distribution of fish_licenses for shore distance calculation in effort calculation
@@ -106,8 +108,11 @@ protect_scen_new <- FALSE
 # protection scenarios to include in analysis current options include "Status_quo","MPAs_maxdist","MPAs_fixed","MPAs_targeted"
 # see protection_scenarios.R and functions.R for more information on protection scenarios
 # you must include "Status_quo" or cost evaluation will not work
-protect_scen <- c("Status_quo","MPAs_maxdist","MPAs_fixed","MPAs_targeted")
-protect_scen_colour <- c("yellow","green","red","blue")
+#protect_scen <- c("Status_quo","MPAs_maxdist","MPAs_fixed","MPAs_targeted")
+#protect_scen_colour <- c("yellow","green","red","blue")
+protect_scen <- c("Status_quo","MPAs_targeted")
+protect_scen_colour <- c("yellow","blue")
+
 
 # country name for coastline download for new "coastal" MPA placement (from package maptools in data(wrld_simpl))
 country_name  <- "Canada"

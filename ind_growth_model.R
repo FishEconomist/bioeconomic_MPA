@@ -3,8 +3,9 @@
 print("Now calculating: Individual growth model")
 require(rgeos)
 #create initial fish distribution at time 0
+# rate = 0.7 in rexp is a good approximation of the population at equilibrium (after 50 yrs) in the status quo scenario
 if(t==min(time)){
-    fish <- data.frame(age=round(rexp(n*length(p), rate = M)),
+    fish <- data.frame(age=round(rexp(n*length(p), rate = 0.7)),
                        polygon=rep(1:length(p),each=n),
                        sex=round(runif(n*length(p),0,1)),
                        length=0
