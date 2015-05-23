@@ -1,7 +1,7 @@
 #### Dispersal ####
 # Larval
 print("Now calculating: Larval Dispersal")
-if(t==min(time)){
+if(t==min(tot_time)){
     distance_breeding <- gDistance(Breeding,p,byid = TRUE)
     closest_breeding <- apply(distance_breeding,1,which.min)
 }
@@ -11,7 +11,7 @@ if(t==min(time)){
 require(dplyr)
 larvae$polygon <- closest_breeding[larvae$polygon]
 larvae$polygon[is.na(larvae$polygon)] <- round(runif(1,1,length(Breeding))) #remove NAs
-larvae <- summarise(group_by(larvae,polygon),eggs=sum(eggs))
+larvae <- summarise(group_by(larvae,polygon),eggs=sum(eggs,na.rm=TRUE))
 larvae$eggs[is.na(larvae$eggs)] <- 1                                        #remove NAs
 
 
@@ -29,17 +29,21 @@ larvae <- data.frame(polygon=unlist(larvae[1,]),recruit=unlist(larvae[2,]))
 names(larvae) <- c("polygon","recruit")
 larvae <- larvae[larvae$recruit>0,]
 
-### recruits not near habitat will die ###
-require(dplyr)
-larvae <- larvae[(larvae$polygon %in% unique(as.vector(hab_mat))),]
 
+# pop_mat <- matrix(0,grd@cells.dim[1],grd@cells.dim[2])
+# for(i in larvae$polygon){
+#     pop_mat[loc_p$X[i],loc_p$Y[i]] = larvae$recruit[larvae$polygon==i]
+# }
+# image(log(pop_mat))
 
 #### recruitment mortality due to carrying capacity ####
 # print("recruitment mortality due to carrying capacity")
-BH_CC_mortality(larvae,fish,CC,CC_sd)
-larvae$recruit <- BH_CC_mortality(larvae,fish,CC,CC_sd)
-larvae <- larvae[larvae$recruit>0,]
+recruits <- BH_CC_mortality(larvae,fish,CC,CC_sd)
 
-recruits <- as.vector(unlist(sapply(unique(larvae$polygon), function(i) rep(i,larvae$recruit[larvae$polygon==i]) )))
 
 print(paste(length(recruits),"new recruits to be added to population in",t+1))
+# pop_mat <- matrix(0,grd@cells.dim[1],grd@cells.dim[2])
+# for(i in unique(recruits)){
+#     pop_mat[loc_p$X[i],loc_p$Y[i]] = sum(recruits==i)
+# }
+# image(log(pop_mat))

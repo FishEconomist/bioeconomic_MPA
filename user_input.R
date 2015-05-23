@@ -3,6 +3,8 @@
 ############################## Basic model parameters ########################################
 # total model run time in years (e.g. 2001:2100 would be 100 years)
 time <- 2001:2051
+spinup <- 10 # number of years before "time" the model starts, results from spin-up years are not saved, all scenarios start as status quo
+tot_time <- (min(time)-10):max(time)
 
 # time step in years
 dt <- 1
@@ -14,10 +16,10 @@ cell_size <- 20
 proj  <- "+proj=lcc +lat_1=40 +lat_2=70 +lat_0=-71.3 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m +no_defs"
 
 # initial number of fish per cell
-n <- 10
+n <- 1
 
 # virtual fish:real fish ratio (e.g. if virtual_fish_ratio=10^6, then 1 virtual fish is 'worth' 10^6 real fish)
-virtual_fish_ratio <- 20000
+virtual_fish_ratio <- 200000
 
 
 ############################# fish growth and reproduction #######################################
@@ -46,16 +48,16 @@ fecundity <- 0.5*10^6
 M <- 0.4
 
 # larval mortality (Mountain et al. 2008)
-lM <- 0.9999
+lM <- rep(0.95,10000)#rbeta(10000,1000,1.2) #larval mortality of 99.88% (range 98.98-99.99%)
 
 # Beverton-Holt model for carrying capacity based recruitment mortality, carrying capacity is the mean of North American carrying capacities in Table 3 of Myers et al. 2001 (CC=0.431088 tonnes/km^2 SD=0.386696)
-CC <- 0.431088*1000*(cell_size^2)/virtual_fish_ratio
-CC_sd <- 0.386696*1000*(cell_size^2)/virtual_fish_ratio
-
+CC <- 0.431088*1000
+CC_sd <- 0.00000000000000000001 #0.386696*1000
+#if this CC was fixed, total biomass would not exceed 500,000 t
 
 ########################### Dispersal ##################################################
 # larval dispersal kernels are assumed to be exponential, e_fold_larvae is the e folding scale in km (the distance at which there will be fewer settlers by a factor of e). We assume that scale to be 2cm/s*90d (avg current velocity * PLD) 
-e_fold_larvae <- sqrt(2/100000*60*60*24*90)
+e_fold_larvae <- 2/100000*60*60*24*90
 
 # adult dispersal kernels are also assumed to be exponential, e_fold_adult (in km) was calculated from data in Lawson & Rose 2000
 e_fold_adult  <- 74.139
@@ -87,7 +89,9 @@ FMSY <- 0.28
 FMSY_buffer <- 2/3
 
 #percent of population measured for biomass estimation (0.001 = 0.1%)
-sampling_pop <- 0.001 
+sampling_pop <- 0.001
+# number of years to use in biomass estimate
+biomass_est_n_years <- 5
 
 #minimum size caught by nets (cm) from Feekings et al. 2013
 min_size <- 38 
@@ -138,7 +142,7 @@ Habitats <- readOGR(dsn=getwd(),layer="cod_habitat")
 Breeding <- readOGR(dsn=getwd(),layer="cod_breeding")
 
 # minimum_fishable_biomass is to prevent errors occuring when fisherman are trying to fish with no fish
-minimum_fishable_biomass <- 1000
+minimum_fishable_biomass <- 10000
 
 ########################################### cost evaluation ##############################################
 # normal operating cost ($) per fisherman from (Department of Fisheries and Oceans, 2007, Table A.19 Mixed Fishery Fleet) 

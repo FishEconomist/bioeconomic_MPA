@@ -15,11 +15,13 @@ Such a complex model requires many parameters to function properly. Below we hav
 Variable | Value | Definition | Source
 :----------:|:----:|:--------------:|:----------:
 _time_| 2001:2100| The time over which the model is run (e.g. 2001 to 2100)| user defined
+_spinup_| 10| The number of years the model runs to generate a realistic starting population before "time". Results are not saved during spin-up time| user defined
+_tot_time_| 1991:2100| The time over which the model is run including spin-up time | user defined
 _dt_| 1| The time step in years| user defined
 _cell_size_| 20| The height and width of the model cell size in km| user defined
 _proj_| "+proj=lcc ... +units=m +no_defs"|The map projection to be used, must comply with [PROJ.4 CRS](http://www.inside-r.org/packages/cran/sp/docs/CRS)| user defined
-_n_| 50| The number of virtual fish per cell at initialization | user defined
-_virtual_fish_ratio_| 1000| The virtual fish:real fish ratio (e.g. if virtual_fish_ratio=10^6, then 1 virtual fish is 'worth' 10^6 real fish)| user defined
+_n_| 20 | The number of virtual fish per cell at initialization | user defined
+_virtual_fish_ratio_| 10000| The virtual fish:real fish ratio (e.g. if virtual_fish_ratio=10^6, then 1 virtual fish is 'worth' 10^6 real fish)| user defined
 _Linf_mean_|112.03| Von Bertalanffy growth model parameter - mean asymptotic length (cm) | Knickle and Rose 2013
 _Linf_SD_ |5.34 |Von Bertalanffy growth model parameter - standard deviation asymptotic length (cm) | Knickle and Rose 2013
 _k_mean_| 0.13|Von Bertalanffy growth model parameters - mean growth coefficient (1/year)| Knickle and Rose 2013
@@ -31,9 +33,9 @@ _age_mat_steepness_| 2.5 | Steepness of the logitic curve for age at sexual matu
 _age_mat_sigmoid_| 4 | Sigmoid of the logitic curve for age at sexual maturity. Fish begin maturing at 2 y, 50% at 4 y and all are mature at 6y | user defined
 _fecundity_| 0.5*10^6 | Size dependent fecundity (eggs per kg of female)| REF
 _M_| 0.4| Natural adult mortality | Mountain et al. 2008
-_lM_| 0.9999| Natural larval mortality | Mountain et al. 2008
-_CC_| 34.49 | The mean carrying capacity for Canadian cod stocks (t of virtual fish/cell)| Myers et al. 2001
-_CC_sd_| 30.94 | The standard deviation of carrying capacity for Canadian cod stocks (t of virtual fish/cell)| Myers et al. 2001
+_lM_| rbeta(10000,1000,1.2) | Natural larval mortality, the model selects a random mortality rate from a beta distribution with α=1000 and β=1.2. This is designed to match a mean larval mortality of 99.88% with a range of 98.98-99.99% | Mountain et al. 2008
+_CC_| 431 | The mean carrying capacity for Canadian cod stocks (kg of fish/km^2)| Myers et al. 2001
+_CC_sd_| 387 | The standard deviation of carrying capacity for Canadian cod stocks (kg of fish/km^2)| Myers et al. 2001
 _e_fold_larvae_| 155.52 | The e-folding scale for larvae in km (the distance at which there will be fewer settlers by a factor of e). Estimated from linear extrapolation of 2 cm/s over 90 d planktonic larval duration| Brander and Hurley 1992
 _e_fold_adult_| 74.139| The e-folding scale for larvae in km (the distance at which there will be fewer settlers by a factor of e). Estimated from dispersal data | Lawson & Rose 2000
 _min_size_migration_| cm| Minimium size for adult migration (cm) | Lawson & Rose 2000
@@ -42,7 +44,8 @@ _fish_communities2_| SpatialPolygonsDataFrame | Same as above, but polygons are 
 _fish_licenses_| c(866, 4714, 3002, 879, 963)| Number of licenses per region in fish_communities | [DFO](http://www.dfo-mpo.gc.ca/stats/commercial/licences-permis/licences-permis-atl-eng.htm)
 _FMSY_| 0.28| Fisheries mortality at Maximum Sustainable Yield| Mountain et al. 2008
 _FMSY_buffer_| 2/3 | quota set to fraction of FMSY as per precautionary principle | user defined
-_sampling_pop_| 0.0005| percent of population measured for biomass estimation | user defined
+_sampling_pop_| 0.001| percent of population measured for biomass estimation | user defined
+_biomass_est_n_years_| 5| number if years averaged for biomass estimation | user defined
 _min_size_| 38| Minimum size fish caught by nets (cm)| Feekings et al. 2013
 _MPA_coverage_| 0.2 | Target protection level in proportion (e.g. 0.2 is 20% protection)| REF
 _CtoM_| 0.0009 | Coastal:marine ratio for MPAs (e.g. CtoM <- 0.4 is 60% marine and 40% coastal in terms of area) | IUCN and UNEP-WCMC, 2015
@@ -66,9 +69,17 @@ _SDR_| c(0.015,0.03,0.06) | Values for the social discount rate | Keller et al. 
 
 ##Equations
 #### Von Bertalanffy growth model
-
     Lt  <-  Linf * (1-exp((-k)*(t-t0)))
 where `Lt` is length (cm) at age `t` (year), `Linf` is the asymptotic length (cm), `k` is the Von Bertalanffy growth coefficient (1/year), and t0 is the x intercept (year). Linf and k are randomly generated from a normal distribution (see table above). 
 #### Length-weight relationship
     fish$weight <- l_to_w_int * fish$length^l_to_w_power
- where `fish$length` is length (cm) and `fish$weight` is the weight (kg)
+ where `fish$length` is length (cm) and `fish$weight` is the weight (kg).
+
+#### Beverton-Holt recruitment model
+    R[i] <- (larvae[i]+fish[i])/fish[i]
+    new_total[i] <- R*fish[i]/(1+fish[i]/CC[i])
+    new_recruits[i] <- new_total[i]-fish[i]
+where `R` is the population growth rate for cell `i`, `larvae[i]` is the number of competent larvae delivered to cell `i`, `fish[i]` is the number of adult fish living in cell `i`, `new_total[i]` is the population size for next year (if no adults were to die), `new_total[i]` is the number if new recruits to be added to the population next year.
+#### Effort
+    effort <- (1-relative_biomass[i])*relative_distance[i]
+where the `relative_biomass` is the biomass in cell `i` divided by the maximum biomass in the model domain and `relative_distance` is the actual distance to shore for cell `i` divided by the mean distance to shore for all the cells in the model domain.

@@ -1,5 +1,7 @@
 rm(list=ls())
 unlink("results/*")
+if(length(dev.list()["RStudioGD"])>=1) dev.off(dev.list()["RStudioGD"])
+par.ini <- par()
 source("user_input.R")
 
 #### source custom functions ####
@@ -16,7 +18,7 @@ source("protection_scenarios.R")
 for(scenario in protect_scen){  
     
     ############################# Begin time loops ###################################################
-    for(t in time){
+    for(t in tot_time){
         print(paste("Now calculating for year:",t,"for scenario",scenario))
         #### Growth and Reproduction ####
         # Individual growth model
@@ -42,6 +44,7 @@ for(scenario in protect_scen){
     ############################# End time loops ###################################################
 }
 ############################# End scenario loops ###################################################
+par(par.ini)
 #### Cost evaluation ####
 # Value of fish catches over time
 source("fish_value.R")

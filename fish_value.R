@@ -2,7 +2,6 @@
 # Value of fish catches over time
 print("Now calculating: Value of fish catches over time")
 ###### re-load data ###########
-
 catch <- NULL
 fish <- NULL
 for(scenario in protect_scen){    
@@ -60,8 +59,8 @@ fish_value$gross_catch_value_USD <- fish_value$tot_catch*fish_landed_value
 
 #calculate operating cost
 # for 2001, the landing value should be ~1.6 times operating cost
-fish_operating_cost_total <- fish_value$gross_catch_value_USD[fish_value$scenario=="Status_quo"]/Status_quo_profitability
-fish_value$dist_corr_factor <- fish_value$mean_dist/fish_value$mean_dist[fish_value$scenario=="Status_quo"&fish_value$time==min(time)]
+fish_operating_cost_total <- mean(fish_value$gross_catch_value_USD[fish_value$scenario=="Status_quo"]/Status_quo_profitability)
+fish_value$dist_corr_factor <- fish_value$mean_dist/mean(fish_value$mean_dist[fish_value$scenario=="Status_quo"])
 fish_value$operating_cost <- fish_value$dist_corr_factor*fish_operating_cost_total
 
 #calculate net catch value

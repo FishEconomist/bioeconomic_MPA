@@ -190,20 +190,23 @@ adult_disperse <- function(fish,poly,min_size_migration,hab_mat,pop_mat){
 #Beverton-Holt model for carrying capacity based recruitment mortality, carrying capacity is the mean of North American carrying capacities in Table 3 of Myers et al. 2001 (CC=0.431088 tonnes/km^2 )
 # input larvae, get recruits
 BH_CC_mortality <- function(larvae,fish,CC,CC_sd){
-    R <- sum(larvae$recruit)/(dim(fish)[1])
-    CCs <- rnorm(length(unique(larvae$polygon)),CC,CC_sd)
+    CCs <- rnorm(max(larvae$polygon),CC,CC_sd)*(cell_size^2)/virtual_fish_ratio
     CCs[CCs<=0] <- 0.1
-    fish_table <- as.data.frame(table(fish$polygon))
-    fish_table$Var1 <- as.numeric(fish_table$Var1)
-    larvae$polygon <- as.numeric(larvae$polygon)
-    new_recruits <- sapply(unique(larvae$polygon), function(i) if(length(round(R*fish_table$Freq[fish_table$Var1==i]/(1+fish_table$Freq[fish_table$Var1==i]/CCs[i])))==1){
-        round(R*fish_table$Freq[fish_table$Var1==i]/(1+fish_table$Freq[fish_table$Var1==i]/CCs[i]))
-                                                                        } else {
-                                                                            0
-                                                                        }
-                                                                  )
-    new_recruits <- unlist(new_recruits)
-    new_recruits[is.na(new_recruits)] <- 0
+    fish_table <- summarise(group_by(fish,polygon),num=sum(polygon==polygon),weight=sum(weight))
+    if(dim(fish_table)[1]!=dim(larvae)[1]) fish_table <- rbind(fish_table,cbind(polygon=larvae$polygon[!(larvae$polygon %in% fish_table$polygon)],num=1,weight=0))
+    larvae$new_recruits <- 0
+    for(i in larvae$polygon){
+        fishi <- fish_table$num[fish_table$polygon==i]
+        fish_avg_weighti <- fish_table$weight[fish_table$polygon==i]/fishi
+        larvaei <- larvae$recruit[larvae$polygon==i]
+        R <- (larvaei+fishi)/fishi
+        CC_n <- CCs[i]/fish_avg_weighti
+        new_total <- R*fishi/(1+fishi/CC_n)
+        new_recruits <- new_total-fishi
+        larvae$new_recruits[larvae$polygon==i] <- round(new_recruits)
+    } 
+    larvae$new_recruits[larvae$new_recruits<0] <- 0
+    new_recruits <- rep(larvae$polygon,larvae$new_recruits)
     return(new_recruits)
 }
 
