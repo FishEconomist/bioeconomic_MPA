@@ -16,10 +16,10 @@ cell_size <- 20
 proj  <- "+proj=lcc +lat_1=40 +lat_2=70 +lat_0=-71.3 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m +no_defs"
 
 # initial number of fish per cell
-n <- 1
+n <- 20
 
 # virtual fish:real fish ratio (e.g. if virtual_fish_ratio=10^6, then 1 virtual fish is 'worth' 10^6 real fish)
-virtual_fish_ratio <- 200000
+virtual_fish_ratio <- 10000
 
 
 ############################# fish growth and reproduction #######################################
@@ -48,11 +48,11 @@ fecundity <- 0.5*10^6
 M <- 0.4
 
 # larval mortality (Mountain et al. 2008)
-lM <- rep(0.95,10000)#rbeta(10000,1000,1.2) #larval mortality of 99.88% (range 98.98-99.99%)
+lM <- rbeta(10000,1000,1.2) #larval mortality of 99.88% (range 98.98-99.99%)
 
 # Beverton-Holt model for carrying capacity based recruitment mortality, carrying capacity is the mean of North American carrying capacities in Table 3 of Myers et al. 2001 (CC=0.431088 tonnes/km^2 SD=0.386696)
 CC <- 0.431088*1000
-CC_sd <- 0.00000000000000000001 #0.386696*1000
+CC_sd <- 0.386696*1000
 #if this CC was fixed, total biomass would not exceed 500,000 t
 
 ########################### Dispersal ##################################################
