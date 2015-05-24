@@ -9,6 +9,9 @@ tot_time <- (min(time)-10):max(time)
 # time step in years
 dt <- 1
 
+# replicates
+replicates <- 1:3
+
 # cell size in km
 cell_size <- 20
 
@@ -16,10 +19,10 @@ cell_size <- 20
 proj  <- "+proj=lcc +lat_1=40 +lat_2=70 +lat_0=-71.3 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m +no_defs"
 
 # initial number of fish per cell
-n <- 20
+n <- 10
 
 # virtual fish:real fish ratio (e.g. if virtual_fish_ratio=10^6, then 1 virtual fish is 'worth' 10^6 real fish)
-virtual_fish_ratio <- 10000
+virtual_fish_ratio <- 20000
 
 
 ############################# fish growth and reproduction #######################################
@@ -45,10 +48,11 @@ fecundity <- 0.5*10^6
 
 ######################### Sources of natural Mortality ##################################
 # natural mortality (Mountain et al. 2008)
-M <- 0.4
+M <- rnorm(10000,0.5938,0.0517)
 
 # larval mortality (Mountain et al. 2008)
 lM <- rbeta(10000,1000,1.2) #larval mortality of 99.88% (range 98.98-99.99%)
+#hist(lM);mean(lM);min(lM);max(lM)
 
 # Beverton-Holt model for carrying capacity based recruitment mortality, carrying capacity is the mean of North American carrying capacities in Table 3 of Myers et al. 2001 (CC=0.431088 tonnes/km^2 SD=0.386696)
 CC <- 0.431088*1000

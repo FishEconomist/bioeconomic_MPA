@@ -11,7 +11,7 @@ require(dplyr)
 larvae <- summarise(group_by(larvae,polygon),eggs=sum(eggs))
 
 # larval mortality
-larvae$eggs <- round(larvae$eggs*(1-sample(lM,length(larvae$eggs),replace=T)))
+larvae$eggs <- round(larvae$eggs*(1-sample(lM,1,replace=T)))
 
 print(paste(sum(larvae$eggs),"eggs survive to become competent larvae"))
 egg_producer(fish$age,fish$sex,age_mat_steepness,age_mat_sigmoid)
