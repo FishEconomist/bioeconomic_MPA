@@ -30,14 +30,28 @@ getnearest4 <- function(a) {
 
 
 # generates SpatialPolygonsDataframe object that represents protection scenario type "Random", "Status_quo","MPAs_maxdist","MPAs_fixed","MPAs_targeted"
-generate_MPAs <- function(sizes,preexist_polygons,seed_polygons,sprout_polygons,cover,EEZ,type,cum_prob,breaks){
+generate_MPAs <- function(sizes,preexist_polygons,seed_polygons,sprout_polygons,cover,EEZ,type){
     tot_area <- gArea(EEZ)
     MPA_cov_new <- 0
     MPA_cov_current <- gArea(gIntersection(preexist_polygons,EEZ,byid = TRUE))/tot_area
     MPA_count <- 0
+    
+    # fit preexisting polygons to grid
+    df <- sprout_polygons@data[1,]
+    preexist_polygons <- sprout_polygons[apply(gIntersects(preexist_polygons,sprout_polygons,byid=TRUE),1,any),]
+    preexist_polygons <- unionSpatialPolygons(preexist_polygons,rep(1,length(preexist_polygons)))
+    preexist_polygons <- SpatialPolygonsDataFrame(preexist_polygons,df,match.ID = FALSE)
+    preexist_polygons <- spChFIDs(preexist_polygons,paste("old",1:length(preexist_polygons)))
+    
+    # remove preexisting from seed and sprout
+    seed_polygons <- seed_polygons[apply(gContains(preexist_polygons,seed_polygons,byid=TRUE),1,any)==FALSE,]
+    sprout_polygons <- sprout_polygons[apply(gContains(preexist_polygons,sprout_polygons,byid=TRUE),1,any)==FALSE,]
+    
     while((MPA_cov_current+MPA_cov_new)<cover){
+        while((MPA_cov_current+MPA_cov_new+(sizes[MPA_count+1]/tot_area))>(cover+0.01)) sizes <- sizes[-(MPA_count+1)]
         size <- sizes[MPA_count+1]
         print(paste0("Seeding new MPA #",MPA_count+1))
+        
         # seed for random
         if(type=="Random"){
             seed <- round(runif(1,1,length(seed_polygons)))
@@ -48,8 +62,7 @@ generate_MPAs <- function(sizes,preexist_polygons,seed_polygons,sprout_polygons,
             pdist <- apply(pdist,2,getnearest4)
             if(length(preexist_polygons)>1) pdist <- apply(pdist,2,mean)          
             seed <- pdist==max(pdist)
-            while(sum(seed)>1) seed[seed==T][round(runif(1,1,length(seed[seed==TRUE])))] <- FALSE
-            seed <- which(seed)
+            seed <- sample(as.numeric(which(seed)),1)
         }
         # seed for set distance
         if(is.numeric(type)){
@@ -57,41 +70,57 @@ generate_MPAs <- function(sizes,preexist_polygons,seed_polygons,sprout_polygons,
             pdist <- pdist>type*0.75|pdist<type*1.25
             pdist2 <- apply(pdist,2,sum)         
             seed <- pdist2==min(pdist2)
-            while(sum(seed)>1) seed[seed==TRUE][round(runif(1,1,length(seed[seed==T])))] <- FALSE
-            seed <- which(seed)
+            seed <- sample(as.numeric(which(seed)),1)
         }
         
         new_MPA <- seed_polygons[seed,]
         seed_area <- gArea(seed_polygons[seed,])
-        seed_polygons <- seed_polygons[-seed,]
-        if(sum(gContains(sprout_polygons,new_MPA,byid=T))>0){
-            sprout_polygons <- sprout_polygons[-which(gContains(sprout_polygons,new_MPA,byid=TRUE)),]
+        seed_polygons_temp <- seed_polygons[-seed,]
+        sprout_polygons_temp <- sprout_polygons
+        if(any(gContains(sprout_polygons_temp,new_MPA,byid=T))){
+            sprout_polygons_temp <- sprout_polygons_temp[-which(gContains(sprout_polygons_temp,new_MPA,byid=TRUE)),]
         }
-#         plot(sprout_polygons)
-#         plot(new_MPA,col="blue",add=T)
+        
+        # grow the MPA (sprouting)
+        sprout_count <- 0
         while(seed_area<size){
-            pdist <- gDistance(new_MPA,sprout_polygons,byid=TRUE)
+            
+            pdist <- gDistance(new_MPA,sprout_polygons_temp,byid=TRUE)
             pdist <- apply(pdist,1,mean)
             sprout <- pdist==min(pdist)
             while(sum(sprout)>1) sprout[sprout==TRUE][round(runif(1,1,length(sprout[sprout==TRUE])))] <- FALSE
-            sprout_MPA <- sprout_polygons[sprout,]
+            #             sprout <- sample(which(sprout),1)
+            sprout_MPA <- sprout_polygons_temp[sprout,]
             plot(EEZ)
             plot(preexist_polygons,col="red",add=TRUE)
             plot(new_MPA,col="blue",add=TRUE)
             plot(sprout_MPA,col="green",add=TRUE)
-            sprout_polygons <- sprout_polygons[-which(sprout),]
-            if(sum(gContains(seed_polygons,new_MPA,byid=T))>0){
-                seed_polygons <- seed_polygons[-which(gContains(seed_polygons,new_MPA,byid=TRUE)),]
-            }
+            title(paste(type,rep))
+            sprout_polygons_temp <- sprout_polygons_temp[-which(sprout),]
+            
             while(gContains(new_MPA,sprout_MPA)==FALSE){
                 print("Sprouting - Increasing MPA size")
                 new_MPA <- rbind(new_MPA,sprout_MPA)
                 seed_area <- gArea(new_MPA)
+                
             }
+            if(length(new_MPA)>10+sprout_count){
+                sprout_count <- sprout_count+1
+                if(sprout_count==1) new_MPA <- unionSpatialPolygons(new_MPA,rep(sprout_count,length(new_MPA)))
+                if(sprout_count!=1) new_MPA <- unionSpatialPolygons(new_MPA,c(1:(sprout_count-1),rep(sprout_count,length(new_MPA)-sprout_count+1)))
+                new_MPA <- SpatialPolygonsDataFrame(new_MPA,df[rep(seq_len(nrow(df)), each=sprout_count),],match.ID = FALSE)
+                new_MPA <- spChFIDs(new_MPA,paste("new",1:length(new_MPA)))
+            }
+            
         }
-        while(sum(gContains(preexist_polygons,new_MPA,byid = TRUE))<1){
+        
+        while(any(gContains(preexist_polygons,new_MPA,byid = TRUE))==FALSE){
+            if(any(gContains(seed_polygons_temp,new_MPA,byid=TRUE))){
+                seed_polygons_temp <- seed_polygons_temp[-which(gContains(seed_polygons_temp,new_MPA,byid=TRUE)),]
+            }
+            seed_polygons <- seed_polygons_temp
+            sprout_polygons <- sprout_polygons_temp
             MPA_count <- MPA_count+1
-            df <- new_MPA@data[1,]
             new_MPA <- unionSpatialPolygons(new_MPA,rep(1,length(new_MPA)))
             new_MPA <- SpatialPolygonsDataFrame(new_MPA,df,match.ID = FALSE)
             new_MPA <- spChFIDs(new_MPA,paste("new",MPA_count))

@@ -4,18 +4,23 @@ print("Now calculating: Value of fish catches over time")
 ###### re-load data ###########
 catch <- NULL
 fish <- NULL
-for(scenario in protect_scen){    
-    for(t in time){
-        temp <- read.csv(paste0("results/",scenario,"_catch_",t,".csv"))
-        temp$time <- t
-        temp$scenario <- scenario
-        catch <- rbind(temp,catch)
-        temp <- read.csv(paste0("results/",scenario,"_fish_",t,".csv"))
-        temp$time <- t
-        temp$scenario <- scenario
-        fish <- rbind(temp,fish)
+for(rep in replicate){
+    for(scenario in protect_scen){    
+        for(t in time){
+            temp <- read.csv(paste0("results/",scenario,"_catch_",t,"_rep_",rep,".csv"))
+            temp$time <- t
+            temp$scenario <- scenario
+            temp$rep <- rep
+            catch <- rbind(temp,catch)
+            temp <- read.csv(paste0("results/",scenario,"_fish_",t,"_rep_",rep,".csv"))
+            temp$time <- t
+            temp$scenario <- scenario
+            temp$rep <- rep
+            fish <- rbind(temp,fish)
+        }
     }
 }
+
 catch$distance <- apply(distance_from_shore,1,min)[catch$polygon]
 
 ###### summarize fish ###########

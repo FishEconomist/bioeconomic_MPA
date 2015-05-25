@@ -2,96 +2,98 @@
 # Protection scenarios (Figure 1)
 print("Now calculating: Protection scenarios")
 
-# MPA size frequency obtained from WDPA database downloaded from http://www.protectedplanet.net/search?marine=1 in March 2015
-# calculations of MPA size frequency are done in MPA_size.R
-MPA_size_dist_coast <- read.csv("MPA_size_dist_coast.csv")
-MPA_size_dist_mar <- read.csv("MPA_size_dist_mar.csv")
-
-# remove size distribution below grid size
-MPA_size_dist_coast <- MPA_size_dist_coast[MPA_size_dist_coast$breaks>=log10(0.1*cell_size^2),]
-MPA_size_dist_mar <- MPA_size_dist_mar[MPA_size_dist_mar$breaks>=log10(0.1*cell_size^2),]
-
-
-coords_bbox <- bbox(EEZ)
-coords_bbox <- data.frame(long=as.vector(coords_bbox[1,]),lat=as.vector(coords_bbox[2,]), stringsAsFactors=F)
-coords_bbox <- data.frame(long=coords_bbox$long[c(1,2,2,1)],lat=coords_bbox$lat[c(1,1,2,2)], stringsAsFactors=F)
-coordinates(coords_bbox) <- ~ long + lat
-coords_bbox <- SpatialPolygons(list(Polygons(list(Polygon(coords_bbox)),ID="CB")))
-
-# standard projection
-require(sp)
-MPAs_coast <- spTransform(MPAs_coast,CRS(proj))
-MPAs_mar <- spTransform(MPAs_mar,CRS(proj))
-EEZ <- spTransform(EEZ,CRS(proj))
-EEZ <- unionSpatialPolygons(EEZ,rep(1,length(EEZ)))
-
-
-
-Habitats <- spTransform(Habitats,CRS(proj))
-Breeding <- spTransform(Breeding,CRS(proj))
-Breeding <- gIntersection(EEZ,Breeding,byid=T, drop_lower_td=TRUE)
-# Habitats <- gIntersection(p,Habitats,byid=T, drop_lower_td=TRUE)
-Habitats <- p[!is.na(over(p,Habitats)),]
-plot(Habitats)
-
-#### plot MPAs ####
-require(rgeos)
-plot(EEZ)
-plot(MPAs_coast,add=T,col='blue')
-plot(MPAs_mar,add=T,col='red')
-# plot(MPAs_AOI,add=T,col='green')
-
-#### unique IDs ####
-# MPAs_AOI <- spChFIDs(MPAs_AOI,paste("AOI",c(1:length(MPAs_AOI))))
-MPAs_coast <- spChFIDs(MPAs_coast,paste("coast",c(1:length(MPAs_coast))))
-MPAs_mar <- spChFIDs(MPAs_mar,paste("mar",c(1:length(MPAs_mar))))
-
-#### rbind MPAs ####
-MPAs <- rbind(MPAs_mar,MPAs_coast)
-rm(MPAs_coast)
-rm(MPAs_mar)
-
-# MPAs <- rbind(MPAs,MPAs_AOI)
-
-# remove Canadian part of the Davis Strait for MPA
-MPAs <- MPAs[as.logical(gContains(EEZ,MPAs,byid=T)),]
-
-#### ignore any MPAs smaller than 10% of grid size ####
-MPAs <- MPAs[gArea(MPAs,byid=T)/(10^6)>(0.1*(cell_size^2)),]
-
-#### match dataframe for p ####
-df <- MPAs@data[1,]
-df[,sapply(df, is.numeric)] <- 0
-df[,sapply(df, is.numeric)==F] <- NA
-df <- df[rep(1,length(p)),]
-p <- SpatialPolygonsDataFrame(p,df,match.ID = F)
-p <- spChFIDs(p,paste("p",c(1:length(p))))
-
-#### match dataframe for Habitats ####
-df <- MPAs@data[1,]
-df[,sapply(df, is.numeric)] <- 0
-df[,sapply(df, is.numeric)==F] <- NA
-df <- df[rep(1,length(Habitats)),]
-Habitats <- SpatialPolygonsDataFrame(Habitats,df,match.ID = F)
-Habitats <- spChFIDs(Habitats,paste("hab",c(1:length(Habitats))))
-
-#### match dataframe for Breeding ####
-df <- MPAs@data[1,]
-df[,sapply(df, is.numeric)] <- 0
-df[,sapply(df, is.numeric)==F] <- NA
-df <- df[rep(1,length(Breeding)),]
-Breeding <- SpatialPolygonsDataFrame(Breeding,df,match.ID = F)
-Breeding <- spChFIDs(Breeding,paste("hab",c(1:length(Breeding))))
-
-#### make Canada (land) polygon for placement of coastal MPAs ####
-data(wrld_simpl)
-Canada <- wrld_simpl[wrld_simpl$NAME==country_name, ]
-Canada <- spTransform(Canada,CRS(proj))
-rm(wrld_simpl)
-plot(Canada)
-
-coastal <- as.vector(gDistance(p,Canada,byid=T)<cell_size)
-plot(p[coastal,])
+if(rep==min(replicates)){
+    # MPA size frequency obtained from WDPA database downloaded from http://www.protectedplanet.net/search?marine=1 in March 2015
+    # calculations of MPA size frequency are done in MPA_size.R
+    MPA_size_dist_coast <- read.csv("MPA_size_dist_coast.csv")
+    MPA_size_dist_mar <- read.csv("MPA_size_dist_mar.csv")
+    
+    # remove size distribution below grid size
+    MPA_size_dist_coast <- MPA_size_dist_coast[MPA_size_dist_coast$breaks>=log10(cell_size^2),]
+    MPA_size_dist_mar <- MPA_size_dist_mar[MPA_size_dist_mar$breaks>=log10(cell_size^2),]
+    
+    
+    coords_bbox <- bbox(EEZ)
+    coords_bbox <- data.frame(long=as.vector(coords_bbox[1,]),lat=as.vector(coords_bbox[2,]), stringsAsFactors=F)
+    coords_bbox <- data.frame(long=coords_bbox$long[c(1,2,2,1)],lat=coords_bbox$lat[c(1,1,2,2)], stringsAsFactors=F)
+    coordinates(coords_bbox) <- ~ long + lat
+    coords_bbox <- SpatialPolygons(list(Polygons(list(Polygon(coords_bbox)),ID="CB")))
+    
+    # standard projection
+    require(sp)
+    MPAs_coast <- spTransform(MPAs_coast,CRS(proj))
+    MPAs_mar <- spTransform(MPAs_mar,CRS(proj))
+    EEZ <- spTransform(EEZ,CRS(proj))
+    EEZ <- unionSpatialPolygons(EEZ,rep(1,length(EEZ)))
+    
+    
+    
+    Habitats <- spTransform(Habitats,CRS(proj))
+    Breeding <- spTransform(Breeding,CRS(proj))
+    Breeding <- gIntersection(EEZ,Breeding,byid=T, drop_lower_td=TRUE)
+    # Habitats <- gIntersection(p,Habitats,byid=T, drop_lower_td=TRUE)
+    Habitats <- p[!is.na(over(p,Habitats)),]
+    plot(Habitats)
+    
+    #### plot MPAs ####
+    require(rgeos)
+    plot(EEZ)
+    plot(MPAs_coast,add=T,col='blue')
+    plot(MPAs_mar,add=T,col='red')
+    # plot(MPAs_AOI,add=T,col='green')
+    
+    #### unique IDs ####
+    # MPAs_AOI <- spChFIDs(MPAs_AOI,paste("AOI",c(1:length(MPAs_AOI))))
+    MPAs_coast <- spChFIDs(MPAs_coast,paste("coast",c(1:length(MPAs_coast))))
+    MPAs_mar <- spChFIDs(MPAs_mar,paste("mar",c(1:length(MPAs_mar))))
+    
+    #### rbind MPAs ####
+    MPAs <- rbind(MPAs_mar,MPAs_coast)
+    rm(MPAs_coast)
+    rm(MPAs_mar)
+    
+    # MPAs <- rbind(MPAs,MPAs_AOI)
+    
+    # remove Canadian part of the Davis Strait for MPA
+    MPAs <- MPAs[as.logical(gContains(EEZ,MPAs,byid=T)),]
+    
+    #### ignore any MPAs smaller than 10% of grid size ####
+    MPAs <- MPAs[gArea(MPAs,byid=T)/(10^6)>(0.1*(cell_size^2)),]
+    
+    #### match dataframe for p ####
+    df <- MPAs@data[1,]
+    df[,sapply(df, is.numeric)] <- 0
+    df[,sapply(df, is.numeric)==F] <- NA
+    df <- df[rep(1,length(p)),]
+    p <- SpatialPolygonsDataFrame(p,df,match.ID = F)
+    p <- spChFIDs(p,paste("p",c(1:length(p))))
+    
+    #### match dataframe for Habitats ####
+    df <- MPAs@data[1,]
+    df[,sapply(df, is.numeric)] <- 0
+    df[,sapply(df, is.numeric)==F] <- NA
+    df <- df[rep(1,length(Habitats)),]
+    Habitats <- SpatialPolygonsDataFrame(Habitats,df,match.ID = F)
+    Habitats <- spChFIDs(Habitats,paste("hab",c(1:length(Habitats))))
+    
+    #### match dataframe for Breeding ####
+    df <- MPAs@data[1,]
+    df[,sapply(df, is.numeric)] <- 0
+    df[,sapply(df, is.numeric)==F] <- NA
+    df <- df[rep(1,length(Breeding)),]
+    Breeding <- SpatialPolygonsDataFrame(Breeding,df,match.ID = F)
+    Breeding <- spChFIDs(Breeding,paste("hab",c(1:length(Breeding))))
+    
+    #### make Canada (land) polygon for placement of coastal MPAs ####
+    data(wrld_simpl)
+    Canada <- wrld_simpl[wrld_simpl$NAME==country_name, ]
+    Canada <- spTransform(Canada,CRS(proj))
+    rm(wrld_simpl)
+    plot(Canada)
+    
+    coastal <- as.vector(gDistance(p,Canada,byid=T)<cell_size)
+    plot(p[coastal,])
+}
 
 if(protect_scen_new){
     
@@ -153,35 +155,35 @@ if(protect_scen_new){
     
     #### save scenarios ####
     if("MPAs_random" %in% protect_scen){
-        writeOGR(MPAs_random,dsn=getwd(), layer = "MPAs_random", driver = "ESRI Shapefile",overwrite_layer=T)
+        writeOGR(MPAs_random,dsn=paste0(getwd(),"/shapefiles"), layer = paste0("MPAs_random_",rep), driver = "ESRI Shapefile",overwrite_layer=T)
     }
     if("MPAs_maxdist" %in% protect_scen){
-        writeOGR(MPAs_maxdist,dsn=getwd(), layer = "MPAs_maxdist", driver = "ESRI Shapefile",overwrite_layer=T)
+        writeOGR(MPAs_maxdist,dsn=paste0(getwd(),"/shapefiles"), layer = paste0("MPAs_maxdist_",rep), driver = "ESRI Shapefile",overwrite_layer=T)
     }
     if("MPAs_fixed" %in% protect_scen){
-        writeOGR(MPAs_fixed,dsn=getwd(), layer = "MPAs_fixed", driver = "ESRI Shapefile",overwrite_layer=T)
+        writeOGR(MPAs_fixed,dsn=paste0(getwd(),"/shapefiles"), layer = paste0("MPAs_fixed_",rep), driver = "ESRI Shapefile",overwrite_layer=T)
     }
     
     if("MPAs_targeted" %in% protect_scen){
-        writeOGR(MPAs_targeted,dsn=getwd(), layer = "MPAs_targeted", driver = "ESRI Shapefile",overwrite_layer=T)
+        writeOGR(MPAs_targeted,dsn=paste0(getwd(),"/shapefiles"), layer = paste0("MPAs_targeted_",rep), driver = "ESRI Shapefile",overwrite_layer=T)
     }
     
     
 } else {
     if("MPAs_random" %in% protect_scen){
-        MPAs_random <- readOGR(dsn=getwd(),layer="MPAs_random")
+        MPAs_random <- readOGR(dsn=paste0(getwd(),"/shapefiles"), layer = paste0("MPAs_random_",rep))
         MPAs_random <- spTransform(MPAs_random,CRS(proj))
     }
     if("MPAs_maxdist" %in% protect_scen){
-        MPAs_maxdist <- readOGR(dsn=getwd(),layer="MPAs_maxdist")
+        MPAs_maxdist <- readOGR(dsn=paste0(getwd(),"/shapefiles"), layer = paste0("MPAs_maxdist_",rep))
         MPAs_maxdist <- spTransform(MPAs_maxdist,CRS(proj))
     }
     if("MPAs_fixed" %in% protect_scen){
-        MPAs_fixed <- readOGR(dsn=getwd(),layer="MPAs_fixed")
+        MPAs_fixed <- readOGR(dsn=paste0(getwd(),"/shapefiles"), layer = paste0("MPAs_fixed_",rep))
         MPAs_fixed <- spTransform(MPAs_fixed,CRS(proj))
     }
     if("MPAs_targeted" %in% protect_scen){
-        MPAs_targeted <- readOGR(dsn=getwd(),layer="MPAs_targeted")
+        MPAs_targeted <- readOGR(dsn=paste0(getwd(),"/shapefiles"), layer = paste0("MPAs_targeted_",rep))
         MPAs_targeted <- spTransform(MPAs_targeted,CRS(proj))
     }
 }
