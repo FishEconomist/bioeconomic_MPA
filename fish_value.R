@@ -3,25 +3,41 @@
 print("Now calculating: Value of fish catches over time")
 ###### re-load data ###########
 require(readr)
+require(dplyr)
 catch <- NULL
 fish <- NULL
-for(rep in replicates){
-    for(scenario in protect_scen){ 
-        print(paste("Now reading",scenario,rep))
-        for(t in time){
-            temp <- read_csv(paste0("results/",scenario,"_catch_",t,"_rep_",rep,".csv"),col_type=list(col_skip() ,col_double(),col_double(),col_double(),col_double(),col_double()))
-            temp$time <- t
-            temp$scenario <- scenario
-            temp$rep <- rep
-            catch <- rbind(temp,catch)
-            temp <- read_csv(paste0("results/",scenario,"_fish_",t,"_rep_",rep,".csv"),col_type=list(col_skip() ,col_double(),col_double(),col_double(),col_double(),col_double()))
-            temp$time <- t
-            temp$scenario <- scenario
-            temp$rep <- rep
-            fish <- rbind(temp,fish)
-        }
-    }
-}
+
+distance_from_shore <- gDistance(fish_communities2,p,byid=TRUE)
+distance_from_shore <- distance_from_shore/mean(distance_from_shore)
+
+files_df <- expand.grid(replicates,protect_scen,time)
+names(files_df) <- c('rep','scenario','time')
+files <- paste0("results/",files_df$scenario,"_catch_",files_df$time,"_rep_",files_df$rep,".csv")
+catch <- lapply(files,read_csv,col_type=list(col_skip() ,col_double(),col_double(),col_double(),col_double(),col_double()))
+catch <- bind_rows(lapply(1:length(files),function(i) cbind(catch[[i]],files_df[i,])))
+
+files <- paste0("results/",files_df$scenario,"_fish_",files_df$time,"_rep_",files_df$rep,".csv")
+fish <- lapply(files,read_csv,col_type=list(col_skip() ,col_double(),col_double(),col_double(),col_double(),col_double()))
+fish <- bind_rows(lapply(1:length(files),function(i) cbind(fish[[i]],files_df[i,])))
+# for(rep in replicates){
+
+# for(rep in replicates){
+#     for(scenario in protect_scen){ 
+#         print(paste("Now reading",scenario,rep))
+#         for(t in time){
+#             temp <- read_csv(paste0("results/",scenario,"_catch_",t,"_rep_",rep,".csv"),col_type=list(col_skip() ,col_double(),col_double(),col_double(),col_double(),col_double()))
+#             temp$time <- t
+#             temp$scenario <- scenario
+#             temp$rep <- rep
+#             catch <- rbind(temp,catch)
+#             temp <- read_csv(paste0("results/",scenario,"_fish_",t,"_rep_",rep,".csv"),col_type=list(col_skip() ,col_double(),col_double(),col_double(),col_double(),col_double()))
+#             temp$time <- t
+#             temp$scenario <- scenario
+#             temp$rep <- rep
+#             fish <- rbind(temp,fish)
+#         }
+#     }
+# }
 
 catch$distance <- apply(distance_from_shore,1,min)[catch$polygon]
 
