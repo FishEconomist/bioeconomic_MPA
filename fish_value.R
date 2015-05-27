@@ -42,10 +42,9 @@ fish <- bind_rows(lapply(1:length(files),function(i) cbind(fish[[i]],files_df[i,
 catch$distance <- apply(distance_from_shore,1,min)[catch$polygon]
 
 ###### summarize fish ###########
-stdev <- function(x) var(x)/sqrt(length(x))
 
-fish <- summarise(group_by(fish,scenario,time,rep),tot_biomass=sum(weight))
-fish <- summarise(group_by(fish,scenario,time),tot_biomass=mean(tot_biomass),tot_biomass_SD=stdev(tot_biomass))
+fish_long <- summarise(group_by(fish,scenario,time,rep),biomass=sum(weight))
+fish <- summarise(group_by(fish_long,scenario,time),tot_biomass=mean(biomass),biomass_SD=sd(biomass))
 
 fish$tot_biomass[is.na(fish$tot_biomass)] <- 0
 
@@ -62,8 +61,8 @@ title(xlab='Time',ylab='Total Stock Biomass (t)')
 
 
 ###### summarize catch ###########
-fish_value <- summarise(group_by(catch,scenario,time,rep),mean_dist=mean(distance),tot_catch=sum(weight))
-fish_value <- summarise(group_by(fish_value,scenario,time),mean_dist=mean(mean_dist),SD_dist=stdev(mean_dist),tot_catch=mean(tot_catch),tot_catch_SD=stdev(tot_catch))
+fish_value <- summarise(group_by(catch,scenario,time,rep),dist=mean(distance,na.rm=TRUE),catch=sum(weight,na.rm=TRUE))
+fish_value <- summarise(group_by(fish_value,scenario,time),mean_dist=mean(dist,na.rm=TRUE),SD_dist=sd(dist,na.rm=TRUE),tot_catch=mean(catch,na.rm=TRUE),tot_catch_SD=sd(catch,na.rm=TRUE))
 
 fish_value$tot_catch[is.na(fish_value$tot_catch)] <- 0
 fish_value$mean_dist[is.na(fish_value$mean_dist)] <- 0
