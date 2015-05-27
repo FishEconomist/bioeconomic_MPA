@@ -59,6 +59,7 @@ if(rep==min(replicates)){
     
     #### ignore any MPAs smaller than 10% of grid size ####
     MPAs <- MPAs[gArea(MPAs,byid=T)/(10^6)>(0.1*(cell_size^2)),]
+    Status_quo <- MPAs
     
     #### match dataframe for p ####
     df <- MPAs@data[1,]
@@ -154,37 +155,16 @@ if(protect_scen_new){
     
     
     #### save scenarios ####
-    if("MPAs_random" %in% protect_scen){
-        writeOGR(MPAs_random,dsn=paste0(getwd(),"/shapefiles"), layer = paste0("MPAs_random_",rep), driver = "ESRI Shapefile",overwrite_layer=T)
-    }
-    if("MPAs_maxdist" %in% protect_scen){
-        writeOGR(MPAs_maxdist,dsn=paste0(getwd(),"/shapefiles"), layer = paste0("MPAs_maxdist_",rep), driver = "ESRI Shapefile",overwrite_layer=T)
-    }
-    if("MPAs_fixed" %in% protect_scen){
-        writeOGR(MPAs_fixed,dsn=paste0(getwd(),"/shapefiles"), layer = paste0("MPAs_fixed_",rep), driver = "ESRI Shapefile",overwrite_layer=T)
-    }
-    
-    if("MPAs_targeted" %in% protect_scen){
-        writeOGR(MPAs_targeted,dsn=paste0(getwd(),"/shapefiles"), layer = paste0("MPAs_targeted_",rep), driver = "ESRI Shapefile",overwrite_layer=T)
+    for(scenario in protect_scen){
+        writeOGR(get(scenario),dsn=paste0(getwd(),"/shapefiles"), layer = paste0(scenario,"_",rep), driver = "ESRI Shapefile",overwrite_layer=T)
     }
     
     
 } else {
-    if("MPAs_random" %in% protect_scen){
-        MPAs_random <- readOGR(dsn=paste0(getwd(),"/shapefiles"), layer = paste0("MPAs_random_",rep))
-        MPAs_random <- spTransform(MPAs_random,CRS(proj))
-    }
-    if("MPAs_maxdist" %in% protect_scen){
-        MPAs_maxdist <- readOGR(dsn=paste0(getwd(),"/shapefiles"), layer = paste0("MPAs_maxdist_",rep))
-        MPAs_maxdist <- spTransform(MPAs_maxdist,CRS(proj))
-    }
-    if("MPAs_fixed" %in% protect_scen){
-        MPAs_fixed <- readOGR(dsn=paste0(getwd(),"/shapefiles"), layer = paste0("MPAs_fixed_",rep))
-        MPAs_fixed <- spTransform(MPAs_fixed,CRS(proj))
-    }
-    if("MPAs_targeted" %in% protect_scen){
-        MPAs_targeted <- readOGR(dsn=paste0(getwd(),"/shapefiles"), layer = paste0("MPAs_targeted_",rep))
-        MPAs_targeted <- spTransform(MPAs_targeted,CRS(proj))
+    #### read scenarios
+    for(scenario in protect_scen){
+        assign(paste(scenario), readOGR(dsn=paste0(getwd(),"/shapefiles"), layer = paste0(scenario,"_",rep)))
+        assign(paste(scenario), spTransform(get(scenario),CRS(proj)))
     }
 }
 
@@ -215,7 +195,7 @@ if("MPAs_targeted" %in% protect_scen){
     title("Targeted MPAs")
 }
 
-Status_quo <- MPAs
+
 
 #### determine polygon locations for dispersal process ####
 loc_breeding <- data.frame(matrix(sapply(1:length(Breeding),function(i) slot(Breeding@polygons[[i]],"labpt")),ncol=2,byrow=TRUE))

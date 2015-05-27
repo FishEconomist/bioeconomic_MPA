@@ -10,7 +10,7 @@ if(t==min(tot_time)){
                        sex=round(runif(n*length(p),0,1)),
                        length=0
                        )
-    CCs <- rnorm(max(fish$polygon),CC,CC_sd)*(cell_size^2)/virtual_fish_ratio #kg of virtual fish per cell
+    CCs <- rnorm(max(fish$polygon),CC,CC_SD)*(cell_size^2)/virtual_fish_ratio #kg of virtual fish per cell
     CCs[CCs<=0] <- 0.1
     recruits <- NULL
     # note: for SEX males=0, females=1

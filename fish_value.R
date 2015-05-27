@@ -2,17 +2,19 @@
 # Value of fish catches over time
 print("Now calculating: Value of fish catches over time")
 ###### re-load data ###########
+require(readr)
 catch <- NULL
 fish <- NULL
-for(rep in replicate){
-    for(scenario in protect_scen){    
+for(rep in replicates){
+    for(scenario in protect_scen){ 
+        print(paste("Now reading",scenario,rep))
         for(t in time){
-            temp <- read.csv(paste0("results/",scenario,"_catch_",t,"_rep_",rep,".csv"))
+            temp <- read_csv(paste0("results/",scenario,"_catch_",t,"_rep_",rep,".csv"),col_type=list(col_skip() ,col_double(),col_double(),col_double(),col_double(),col_double()))
             temp$time <- t
             temp$scenario <- scenario
             temp$rep <- rep
             catch <- rbind(temp,catch)
-            temp <- read.csv(paste0("results/",scenario,"_fish_",t,"_rep_",rep,".csv"))
+            temp <- read_csv(paste0("results/",scenario,"_fish_",t,"_rep_",rep,".csv"),col_type=list(col_skip() ,col_double(),col_double(),col_double(),col_double(),col_double()))
             temp$time <- t
             temp$scenario <- scenario
             temp$rep <- rep
@@ -24,8 +26,11 @@ for(rep in replicate){
 catch$distance <- apply(distance_from_shore,1,min)[catch$polygon]
 
 ###### summarize fish ###########
+stdev <- function(x) var(x)/sqrt(length(x))
 
-fish <- summarise(group_by(fish,scenario,time),tot_biomass=sum(weight))
+fish <- summarise(group_by(fish,scenario,time,rep),tot_biomass=sum(weight))
+fish <- summarise(group_by(fish,scenario,time),tot_biomass=mean(tot_biomass),tot_biomass_SD=stdev(tot_biomass))
+
 fish$tot_biomass[is.na(fish$tot_biomass)] <- 0
 
 #adjust from virtual fish (kg) to real fish (t)
@@ -41,7 +46,9 @@ title(xlab='Time',ylab='Total Stock Biomass (t)')
 
 
 ###### summarize catch ###########
-fish_value <- summarise(group_by(catch,scenario,time),mean_dist=mean(distance),tot_catch=sum(weight))
+fish_value <- summarise(group_by(catch,scenario,time,rep),mean_dist=mean(distance),tot_catch=sum(weight))
+fish_value <- summarise(group_by(fish_value,scenario,time),mean_dist=mean(mean_dist),SD_dist=stdev(mean_dist),tot_catch=mean(tot_catch),tot_catch_SD=stdev(tot_catch))
+
 fish_value$tot_catch[is.na(fish_value$tot_catch)] <- 0
 fish_value$mean_dist[is.na(fish_value$mean_dist)] <- 0
 

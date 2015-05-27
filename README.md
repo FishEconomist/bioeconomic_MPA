@@ -6,7 +6,7 @@ If you would like to apply this toolkit to your own scenario, please fork this r
 
 If you would like to replicate our results, download the repository as is and run the simulations by running the code in master.R. This script will source the user defined parameters (user_input.R), the custom MPA toolkit functions (functions.R), and the various MPA toolkit sub-modules.
 
-**Please note:** This toolkit requires the installation of R packages before use (dplyr, Grid2Polygons, maptools, raster, rgdal*, rgeos, sp)
+**Please note:** This toolkit requires the installation of R packages before use (dplyr, Grid2Polygons, maptools, raster, readr, rgdal*, rgeos, sp)
 *installation of the rgdal package is notoriously difficult, please see [here](http://stackoverflow.com/questions/15248815/rgdal-package-installation) and [here](http://cran.r-project.org/web/packages/rgdal/index.html) for further information should you have any problems.
 
 ## Parameterization
@@ -18,10 +18,14 @@ _time_| 2001:2100| The time over which the model is run (e.g. 2001 to 2100)| use
 _spinup_| 10| The number of years the model runs to generate a realistic starting population before "time". Results are not saved during spin-up time| user defined
 _tot_time_| 1991:2100| The time over which the model is run including spin-up time | user defined
 _dt_| 1| The time step in years| user defined
+_replicates_| 1:10 | The number of replicates for the main body of the model | user defined
 _cell_size_| 20| The height and width of the model cell size in km| user defined
 _proj_| "+proj=lcc ... +units=m +no_defs"|The map projection to be used, must comply with [PROJ.4 CRS](http://www.inside-r.org/packages/cran/sp/docs/CRS)| user defined
-_n_| 20 | The number of virtual fish per cell at initialization | user defined
-_virtual_fish_ratio_| 10000| The virtual fish:real fish ratio (e.g. if virtual_fish_ratio=10^6, then 1 virtual fish is 'worth' 10^6 real fish)| user defined
+_n_| 10 | The number of virtual fish per cell at initialization | user defined
+_virtual_fish_ratio_| 20000| The virtual fish:real fish ratio (e.g. if virtual_fish_ratio=10^6, then 1 virtual fish is 'worth' 10^6 real fish)| user defined
+_protect_scen_new_| LOGICAL | Create new protection scenarios? (TRUE creates new maps, but is slow. FALSE uses previously saved maps). Very computationally expensive if TRUE| user defined
+_time_loop_plot_| LOGICAL | Create plots during the time loops? (TRUE creates plots every year, but might slow down performance a bit).| user defined
+_full_model_| LOGICAL | Allows the user to skip the replicate/scenario/time loops, to proceed directly to analysis of results (assumes there are files in results directory) | user defined
 _Linf_mean_|112.03| Von Bertalanffy growth model parameter - mean asymptotic length (cm) | Knickle and Rose 2013
 _Linf_SD_ |5.34 |Von Bertalanffy growth model parameter - standard deviation asymptotic length (cm) | Knickle and Rose 2013
 _k_mean_| 0.13|Von Bertalanffy growth model parameters - mean growth coefficient (1/year)| Knickle and Rose 2013
@@ -32,10 +36,10 @@ _l_to_w_power_| 1| The time step in years| Knickle and Rose 2013
 _age_mat_steepness_| 2.5 | Steepness of the logitic curve for age at sexual maturity. Fish begin maturing at 2 y, 50% at 4 y and all are mature at 6y | user defined
 _age_mat_sigmoid_| 4 | Sigmoid of the logitic curve for age at sexual maturity. Fish begin maturing at 2 y, 50% at 4 y and all are mature at 6y | user defined
 _fecundity_| 0.5*10^6 | Size dependent fecundity (eggs per kg of female)| REF
-_M_| 0.4| Natural adult mortality | Mountain et al. 2008
+_M_| rnorm(10000,0.5938,0.0517)| Natural adult mortality,the model selects a random mortality rate from a normal distribution with mean of 0.5938 and a standard deviation of 0.0517. This is designed to match the latest mortality estimates  | Swain & Chouinard 2008
 _lM_| rbeta(10000,1000,1.2) | Natural larval mortality, the model selects a random mortality rate from a beta distribution with α=1000 and β=1.2. This is designed to match a mean larval mortality of 99.88% with a range of 98.98-99.99% | Mountain et al. 2008
 _CC_| 431 | The mean carrying capacity for Canadian cod stocks (kg of fish/km^2)| Myers et al. 2001
-_CC_sd_| 387 | The standard deviation of carrying capacity for Canadian cod stocks (kg of fish/km^2)| Myers et al. 2001
+_CC_SD_| 387 | The standard deviation of carrying capacity for Canadian cod stocks (kg of fish/km^2)| Myers et al. 2001
 _e_fold_larvae_| 12.47 | The e-folding scale for larvae in km (the distance at which there will be fewer settlers by a factor of e). Estimated as a random walk of 2 cm/s over 90 d planktonic larval duration,the square root is because we assume that the current is like a random walk| Brander and Hurley 1992
 _e_fold_adult_| 74.139| The e-folding scale for larvae in km (the distance at which there will be fewer settlers by a factor of e). Estimated from dispersal data | Lawson & Rose 2000
 _min_size_migration_| cm| Minimium size for adult migration (cm) | Lawson & Rose 2000
@@ -50,7 +54,6 @@ _min_size_| 38| Minimum size fish caught by nets (cm)| Feekings et al. 2013
 _MPA_coverage_| 0.2 | Target protection level in proportion (e.g. 0.2 is 20% protection)| REF
 _CtoM_| 0.0009 | Coastal:marine ratio for MPAs (e.g. CtoM <- 0.4 is 60% marine and 40% coastal in terms of area) | IUCN and UNEP-WCMC, 2015
 _fixdist_| 75 | The fixed distance for setting MPA distance in km in fixed distance scenario. Set to approximately the mean adult dispersal distance | Lawson & Rose 2000
-_protect_scen_new_| LOGICAL | Create new protection scenarios? (TRUE creates new maps, but is slow. FALSE uses previously saved maps). Very computationally expensive if TRUE| user defined
 _protect_scen_| 1| The time step in years| user defined
 _protect_scen_colour_| 1| The time step in years| user defined
 _country_name_| 1| The time step in years| user defined
