@@ -39,7 +39,7 @@ _fecundity_| 0.5*10^6 | Size dependent fecundity (eggs per kg of female)| REF
 _M_| rnorm(10000,0.5938,0.0517)| Natural adult mortality,the model selects a random mortality rate from a normal distribution with mean of 0.5938 and a standard deviation of 0.0517. This is designed to match the latest mortality estimates  | Swain & Chouinard 2008
 _lM_| rbeta(10000,1000,1.2) | Natural larval mortality, the model selects a random mortality rate from a beta distribution with α=1000 and β=1.2. This is designed to match a mean larval mortality of 99.88% with a range of 98.98-99.99% | Mountain et al. 2008
 _CC_| 431 | The mean carrying capacity for Canadian cod stocks (kg of fish/km^2)| Myers et al. 2001
-_CC_SD_| 387 | The standard deviation of carrying capacity for Canadian cod stocks (kg of fish/km^2)| Myers et al. 2001
+_CC_sd_| 387 | The standard deviation of carrying capacity for Canadian cod stocks (kg of fish/km^2)| Myers et al. 2001
 _e_fold_larvae_| 12.47 | The e-folding scale for larvae in km (the distance at which there will be fewer settlers by a factor of e). Estimated as a random walk of 2 cm/s over 90 d planktonic larval duration,the square root is because we assume that the current is like a random walk| Brander and Hurley 1992
 _e_fold_adult_| 74.139| The e-folding scale for larvae in km (the distance at which there will be fewer settlers by a factor of e). Estimated from dispersal data | Lawson & Rose 2000
 _min_size_migration_| cm| Minimium size for adult migration (cm) | Lawson & Rose 2000
@@ -51,7 +51,7 @@ _FMSY_buffer_| 2/3 | quota set to fraction of FMSY as per precautionary principl
 _sampling_pop_| 0.001| percent of population measured for biomass estimation | user defined
 _biomass_est_n_years_| 5| number if years averaged for biomass estimation | user defined
 _min_size_| 38| Minimum size fish caught by nets (cm)| Feekings et al. 2013
-_MPA_coverage_| 0.2 | Target protection level in proportion (e.g. 0.2 is 20% protection)| REF
+_MPA_coverage_| 0.1 | Target protection level in proportion (e.g. 0.2 is 20% protection)| [DFO](http://www.dfo-mpo.gc.ca/oceans/publications/dmpaf-eczpm/framework-cadre2011-eng.asp)
 _CtoM_| 0.0009 | Coastal:marine ratio for MPAs (e.g. CtoM <- 0.4 is 60% marine and 40% coastal in terms of area) | IUCN and UNEP-WCMC, 2015
 _fixdist_| 75 | The fixed distance for setting MPA distance in km in fixed distance scenario. Set to approximately the mean adult dispersal distance | Lawson & Rose 2000
 _protect_scen_| 1| The time step in years| user defined

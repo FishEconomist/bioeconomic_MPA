@@ -26,13 +26,13 @@ virtual_fish_ratio <- 20000
 
 # create new protection scenarios? (TRUE creates new maps, but is slow. FALSE uses previously saved maps) 
 # very computationally expensive if TRUE
-protect_scen_new <- FALSE
+protect_scen_new <- TRUE
 
 # plot during loops?
-time_loop_plot <- TRUE
+time_loop_plot <- FALSE
 
 # analysis model (skips the loops), or full model
-full_model  <- FALSE
+full_model  <- TRUE
 
 ############################# fish growth and reproduction #######################################
 # #Von Bertalanffy growth model parameters (Knickle and Rose 2013)
@@ -110,7 +110,7 @@ biomass_est_n_years <- 5
 min_size <- 38 
 
 # target protection level in proportion (e.g. 0.2 is 20% protection)
-MPA_coverage <- 0.20
+MPA_coverage <- 0.10
 
 # coastal:marine ratio for MPAs (e.g. CtoM <- 0.4 is 60% marine and 40% coastal in terms of area)
 CtoM <- 0.0009422693

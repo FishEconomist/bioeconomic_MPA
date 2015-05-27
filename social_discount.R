@@ -30,5 +30,5 @@ fish_value_summary <- summarise(group_by(fish_value,scenario),
 )
 
 barplot(fish_value_summary$net_catch_value_SDRA,names=fish_value_summary$scenario,ylab="Net Present Value (USD)")
-barplot(fish_value_summary$net_catch_value_SDRA,names=fish_value_summary$scenario,ylab="Net Present Value (USD)")
-barplot(fish_value_summary$net_catch_value_SDRA,names=fish_value_summary$scenario,ylab="Net Present Value (USD)")
+barplot(fish_value_summary$net_catch_value_SDRB,names=fish_value_summary$scenario,ylab="Net Present Value (USD)")
+barplot(fish_value_summary$net_catch_value_SDRC,names=fish_value_summary$scenario,ylab="Net Present Value (USD)")

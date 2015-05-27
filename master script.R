@@ -62,7 +62,7 @@ if(full_model){
 source("fish_value.R")
 
 # MPA implementation and enforcement
-# source("MPA_impl_enforcement.R")
+source("MPA_impl_enforcement.R")
 
 # Social discount rate
 source("social_discount.R")
