@@ -7,16 +7,16 @@ If you would like to apply this toolkit to your own scenario, please fork this r
 If you would like to replicate our results, download the repository as is and run the simulations by running the code in master.R. This script will source the user defined parameters (user_input.R), the custom MPA toolkit functions (functions.R), and the various MPA toolkit sub-modules.
 
 **Please note:** This toolkit requires the installation of R packages before use (dplyr, Grid2Polygons, maptools, raster, readr, rgdal*, rgeos, sp)
-*installation of the rgdal package is notoriously difficult, please see [here](http://stackoverflow.com/questions/15248815/rgdal-package-installation) and [here](http://cran.r-project.org/web/packages/rgdal/index.html) for further information should you have any problems.
+>*installation of the rgdal package is notoriously difficult, please see [here](http://stackoverflow.com/questions/15248815/rgdal-package-installation) and [here](http://cran.r-project.org/web/packages/rgdal/index.html) for further information should you have any problems.
 
 ## Parameterization
 Such a complex model requires many parameters to function properly. Below we have included a list of parameters and user inputs contained in the model.
 
 Variable | Value | Definition | Source
 :----------:|:----:|:--------------:|:----------:
-_time_| 2001:2100| The time over which the model is run (e.g. 2001 to 2100)| user defined
+_time_| 2001:2051| The time over which the model is run (e.g. 2001 to 2100)| user defined
 _spinup_| 10| The number of years the model runs to generate a realistic starting population before "time". Results are not saved during spin-up time| user defined
-_tot_time_| 1991:2100| The time over which the model is run including spin-up time | user defined
+_tot_time_| 1991:2051| The time over which the model is run including spin-up time | user defined
 _dt_| 1| The time step in years| user defined
 _replicates_| 1:10 | The number of replicates for the main body of the model | user defined
 _cell_size_| 20| The height and width of the model cell size in km| user defined
