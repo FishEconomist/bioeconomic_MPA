@@ -10,7 +10,7 @@ tot_time <- (min(time)-10):max(time)
 dt <- 1
 
 # replicates
-replicates <- 1:3
+replicates <- 7:10
 
 # cell size in km
 cell_size <- 20
@@ -122,7 +122,7 @@ fixdist <- 75
 # see protection_scenarios.R and functions.R for more information on protection scenarios
 # you must include "Status_quo" or cost evaluation will not work
 protect_scen <- c("Status_quo","MPAs_maxdist","MPAs_fixed","MPAs_targeted")
-protect_scen_colour <- c("yellow","green","red","blue")
+protect_scen_colour <- c("purple","green","red","blue")
 # protect_scen <- c("Status_quo","MPAs_targeted")
 # protect_scen_colour <- c("yellow","blue")
 

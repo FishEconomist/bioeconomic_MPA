@@ -14,7 +14,7 @@ source("basic_grid.R")
 
 ############################# Begin scenario loops ###################################################
 if(full_model){
-    unlink("results/*")
+#     unlink("results/*")
     for(rep in replicates){        
             
         # Protection scenarios (Figure 1)
@@ -25,7 +25,7 @@ if(full_model){
             
             ############################# Begin time loops ###################################################
             for(t in tot_time){
-                print(paste("Now calculating for year:",t,"for scenario",scenario))
+                print(paste("Now calculating for year:",t,"for scenario",scenario,"rep",rep))
                 #### Growth and Reproduction ####
                 # Individual growth model
                 source("ind_growth_model.R")
