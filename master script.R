@@ -1,6 +1,7 @@
 # housekeeping
 rm(list=ls())
 if(length(dev.list()["RStudioGD"])>=1) dev.off(dev.list()["RStudioGD"])
+if(!file.exists("results")) dir.create("results/")
 
 #### user inputs ####
 source("user_input.R")

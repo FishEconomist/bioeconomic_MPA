@@ -80,6 +80,7 @@ if(biomass>minimum_fishable_biomass){
     # if in moratorium, then
     print("WARNING: Moratorium is activated")
     if(t>=min(time)){
+        if(length(fish)<1) fish <- data.frame(age=NA,polygon=NA,sex=NA,length=NA,weight=NA)
         write.csv(fish,paste0("results/",scenario,"_fish_",t,"_rep_",rep,".csv"))
         catch <- data.frame(age=NA,polygon=NA,sex=NA,length=NA,weight=NA)
         write.csv(catch,paste0("results/",scenario,"_catch_",t,"_rep_",rep,".csv"))
