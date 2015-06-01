@@ -10,7 +10,7 @@ tot_time <- (min(time)-10):max(time)
 dt <- 1
 
 # replicates
-replicates <- 4
+replicates <- c(31:35)
 
 # cell size in km
 cell_size <- 20
@@ -26,10 +26,10 @@ virtual_fish_ratio <- 20000
 
 # create new protection scenarios? (TRUE creates new maps, but is slow. FALSE uses previously saved maps) 
 # very computationally expensive if TRUE
-protect_scen_new <- FALSE
+protect_scen_new <- TRUE
 
 # plot during loops?
-time_loop_plot <- TRUE
+time_loop_plot <- FALSE
 
 # analysis model (skips the loops), or full model
 full_model  <- TRUE
