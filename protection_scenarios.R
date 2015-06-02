@@ -156,7 +156,7 @@ if(protect_scen_new){
     
     #### save scenarios ####
     for(scenario in protect_scen){
-        writeOGR(get(scenario),dsn=paste0(getwd(),"/shapefiles"), layer = paste0(scenario,"_",rep), driver = "ESRI Shapefile",overwrite_layer=T)
+        writeOGR(get(scenario),dsn=getwd(), layer = paste0("shapefiles/",scenario,"_",rep), driver = "ESRI Shapefile",overwrite_layer=T)
     }
     
     

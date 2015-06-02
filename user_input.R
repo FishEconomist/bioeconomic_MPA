@@ -10,7 +10,7 @@ tot_time <- (min(time)-10):max(time)
 dt <- 1
 
 # replicates
-replicates <- c(31:35)
+replicates <- c(4)
 
 # cell size in km
 cell_size <- 20
