@@ -31,14 +31,9 @@ getnearest4 <- function(a) {
 
 # generates SpatialPolygonsDataframe object that represents protection scenario type "Random", "Status_quo","MPAs_maxdist","MPAs_fixed","MPAs_targeted"
 generate_MPAs <- function(sizes,preexist_polygons,seed_polygons,sprout_polygons,cover,EEZ,type){
-    tot_area <- gArea(EEZ)
-    MPA_cov_new <- 0
-    MPA_cov_current <- gArea(gIntersection(preexist_polygons,EEZ,byid = TRUE))/tot_area
-    MPA_count <- 0
-    
     # fit preexisting polygons to grid
     df <- sprout_polygons@data[1,]
-    preexist_polygons <- sprout_polygons[apply(gIntersects(preexist_polygons,sprout_polygons,byid=TRUE),1,any),]
+    preexist_polygons <- sprout_polygons[apply(gIntersects(gBuffer(preexist_polygons,byid=F,width=(-1000)),sprout_polygons,byid=TRUE),1,any),]
     preexist_polygons <- unionSpatialPolygons(preexist_polygons,rep(1,length(preexist_polygons)))
     preexist_polygons <- SpatialPolygonsDataFrame(preexist_polygons,df,match.ID = FALSE)
     preexist_polygons <- spChFIDs(preexist_polygons,paste("old",1:length(preexist_polygons)))
@@ -47,8 +42,12 @@ generate_MPAs <- function(sizes,preexist_polygons,seed_polygons,sprout_polygons,
     seed_polygons <- seed_polygons[apply(gContains(preexist_polygons,seed_polygons,byid=TRUE),1,any)==FALSE,]
     sprout_polygons <- sprout_polygons[apply(gContains(preexist_polygons,sprout_polygons,byid=TRUE),1,any)==FALSE,]
     
-    while((MPA_cov_current+MPA_cov_new)<cover){
-        while((MPA_cov_current+MPA_cov_new+(sizes[MPA_count+1]/tot_area))>(cover+0.01)) sizes <- sizes[-(MPA_count+1)]
+    tot_area <- gArea(EEZ)
+    MPA_cov <- gArea(preexist_polygons)/tot_area
+    MPA_count <- 0
+    
+    while((MPA_cov)<cover){
+        while((MPA_cov+(sizes[MPA_count+1]/tot_area))>(cover+0.01)) sizes <- sizes[-(MPA_count+1)]
         size <- sizes[MPA_count+1]
         print(paste0("Seeding new MPA #",MPA_count+1))
         
@@ -124,13 +123,13 @@ generate_MPAs <- function(sizes,preexist_polygons,seed_polygons,sprout_polygons,
             new_MPA <- unionSpatialPolygons(new_MPA,rep(1,length(new_MPA)))
             new_MPA <- SpatialPolygonsDataFrame(new_MPA,df,match.ID = FALSE)
             new_MPA <- spChFIDs(new_MPA,paste("new",MPA_count))
-            seed_area <- gArea(new_MPA)
-            MPA_cov_new <- MPA_cov_new + (seed_area/tot_area)
+            seed_area <- gArea(new_MPA) 
             preexist_polygons <- rbind(preexist_polygons,new_MPA)
+            MPA_cov <- gArea(preexist_polygons)/tot_area
             plot(EEZ)
             plot(preexist_polygons,col="red",add=TRUE)
             plot(new_MPA,col="blue",add=TRUE)
-            print(paste0("Added new MPA, new percent cover = ",round(MPA_cov_current+MPA_cov_new,4)))
+            print(paste0("Added new MPA, new percent cover = ",round(MPA_cov,4)))
         }
     }
     return(preexist_polygons)

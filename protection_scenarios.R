@@ -150,7 +150,7 @@ if(protect_scen_new){
     
     if("MPAs_targeted" %in% protect_scen){
         print(paste0("Establishing new marine targeted with fixed distance (",fixdist," km) MPAs"))
-        MPAs_targeted <- generate_MPAs(sizes,rbind(MPAs,Breeding),Habitats,Habitats,(MPA_coverage-(MPA_coverage*CtoM)),EEZ,fixdist)
+        MPAs_targeted <- generate_MPAs(sizes,MPAs_targeted,Habitats,Habitats,(MPA_coverage-(MPA_coverage*CtoM)),EEZ,fixdist)
     }
     
     

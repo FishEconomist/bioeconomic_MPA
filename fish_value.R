@@ -75,9 +75,9 @@ for(scenario in protect_scen){
 par(mfrow=c(2,2))
 for(scenario in protect_scen){   
     plot.new();box(bty="l")
-    plot.window(ylim=c(0,max(fish_value$dist)*1.1),xlim=range(time))
-    lines(fish_value_means$mean_dist[fish_value_means$scenario==scenario]~time,col=protect_scen_colour[protect_scen==scenario],lwd=2)
-    points(fish_value$dist[fish_value$scenario==scenario]~fish_value$time[fish_value$scenario==scenario],pch=4,cex=0.5) 
+    plot.window(ylim=c(0,max(fish_value$dist)*1.1)/1000,xlim=range(time))
+    lines(fish_value_means$mean_dist[fish_value_means$scenario==scenario]/1000~time,col=protect_scen_colour[protect_scen==scenario],lwd=2)
+    points(fish_value$dist[fish_value$scenario==scenario]/1000~fish_value$time[fish_value$scenario==scenario],pch=4,cex=0.5) 
     title(scenario)
     title(xlab='Time',ylab='Mean distance from shore (km)')
     axis(1);axis(2)

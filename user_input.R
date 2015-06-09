@@ -9,8 +9,8 @@ tot_time <- (min(time)-10):max(time)
 # time step in years
 dt <- 1
 
-# replicates
-replicates <- c(4)
+# replicates (should be more than 1 or fish_value.R onwards will not work)
+replicates <- c(1:50)
 
 # cell size in km
 cell_size <- 20
@@ -29,10 +29,10 @@ virtual_fish_ratio <- 20000
 protect_scen_new <- TRUE
 
 # plot during loops?
-time_loop_plot <- FALSE
+time_loop_plot <- TRUE
 
-# analysis model (skips the loops), or full model
-full_model  <- TRUE
+# analysis mode (skips the loops if FALSE), or full model if TRUE
+full_model  <- FALSE
 
 ############################# fish growth and reproduction #######################################
 # #Von Bertalanffy growth model parameters (Knickle and Rose 2013)
@@ -123,8 +123,8 @@ fixdist <- 75
 # you must include "Status_quo" or cost evaluation will not work
 protect_scen <- c("Status_quo","MPAs_maxdist","MPAs_fixed","MPAs_targeted")
 protect_scen_colour <- c("purple","green","red","blue")
-# protect_scen <- c("Status_quo","MPAs_targeted")
-# protect_scen_colour <- c("yellow","blue")
+# protect_scen <- c("MPAs_targeted")
+# protect_scen_colour <- c("blue")
 
 
 # country name for coastline download for new "coastal" MPA placement (from package maptools in data(wrld_simpl))
@@ -155,16 +155,16 @@ minimum_fishable_biomass <- 10000
 
 ########################################### cost evaluation ##############################################
 # normal operating cost ($) per fisherman from (Department of Fisheries and Oceans, 2007, Table A.19 Mixed Fishery Fleet) 
-# labour ($46587) and fuel ($9008) vary with distance, the remainder does not
+# labour (CAD $46587) and fuel ($9008) vary with distance, the remainder does not
 fish_operating_cost_ratio <- (46587+9008)/105054 # (labour+fuel)/total
 # default profitability to calibrate operating cost (Department of Fisheries and Oceans, 2007, Table A.19 and 5.7 Mixed Fishery Fleet)
 Status_quo_profitability <- 166184/105054 #$ catch value/$ operating expense
 
-# landed value for cod USD/t (http://www.dfo-mpo.gc.ca/stats/commercial/sea-maritimes-eng.htm)
+# landed value for cod CAD/t (http://www.dfo-mpo.gc.ca/stats/commercial/sea-maritimes-eng.htm)
 fish_landed_value <- 1.24*1000
 
-# Cost of maintaining an MPA USD/km2/year (Balmford 2004)
-MPA_maintenance_cost <- 2698
+# Cost of maintaining an MPA 2698 USD/km2/year (Balmford 2004), 1.21 is current exchange rate to CAD
+MPA_maintenance_cost <- 2698*1.21
 
 # Social discount rates (choose 3)
 SDR <- c(0.015,0.03,0.06)
