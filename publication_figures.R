@@ -77,8 +77,9 @@ for(scenario in protect_scen){
 dev.off()
 
 ########## Figure 6 - Social Discount Rate #################################
-jpeg(paste('figures/f6_SDR.jpg'),height=22.5,width=17,units="cm",res=res,qual=qual)
+jpeg(paste('figures/f6_SDR.jpg'),height=20,width=17,units="cm",res=res,qual=qual)
 layout(matrix(c(1,2,3,4,5,6),nrow=3))
+par(mar=c(4,4,3,1))
 # cumulative plots
 for(i in 2:4){
     plot.new();box(bty="l")
@@ -89,7 +90,7 @@ for(i in 2:4){
     }
     abline(a=1,b=0) #add break even line
     axis(1);axis(2)
-    title(main=paste('SDR = ',c(0,SDR)[i]),xlab='Time',ylab='Present catch cumulative value (10^6 CAD)')
+    title(main=paste('SDR = ',c(0,SDR)[i]),xlab='Time',ylab='Cumulative Net Present Value (10^6 CAD)')
     legend(2005,200,gsub("_"," ",protect_scen),bty='n')
 }
 
@@ -100,7 +101,7 @@ for(i in 2:4){
     fish_value_summary$plotting <- unlist(fish_value_summary[,(6+i)])
     boxplot(plotting ~ scenario, data=fish_value_summary, notches=TRUE, xaxt='n',
             col = protect_scen_colour,
-            ylab = "Net Present Value (10^6 CAD)",
+            ylab = "Total Net Present Value (10^6 CAD)",
             xlim = xlim, ylim = ylim, yaxs = "i")
     text(1:length(protect_scen),par("usr")[3]-175,labels=gsub("_"," ",protect_scen),srt=30,xpd=T)
     title(main=paste('SDR = ',c(0,SDR)[i]))

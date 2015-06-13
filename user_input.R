@@ -32,7 +32,7 @@ protect_scen_new <- TRUE
 time_loop_plot <- TRUE
 
 # analysis mode (skips the loops if FALSE), or full model if TRUE
-full_model  <- FALSE
+full_model  <- TRUE
 
 ############################# fish growth and reproduction #######################################
 # #Von Bertalanffy growth model parameters (Knickle and Rose 2013)

@@ -86,3 +86,5 @@ where `R` is the population growth rate for cell `i`, `larvae[i]` is the number 
 #### Effort
     effort <- (1-relative_biomass[i])*relative_distance[i]
 where the `relative_biomass` is the biomass in cell `i` divided by the maximum biomass in the model domain and `relative_distance` is the actual distance to shore for cell `i` divided by the mean distance to shore for all the cells in the model domain.
+
+> There will be a few more equations here, plus a summary of what each module/submodule does _in English_
