@@ -3,5 +3,6 @@
 .RData
 *.RData
 results/*
-
 *.csv
+*.jpg
+Rplots.pdf
