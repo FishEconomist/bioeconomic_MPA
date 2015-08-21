@@ -1,6 +1,6 @@
 # housekeeping
 rm(list=ls())
-if(length(dev.list()["RStudioGD"])>=1) dev.off(dev.list()["RStudioGD"])
+if(length(dev.list()["RStudioGD"])>1) dev.off(dev.list()["RStudioGD"])
 if(!file.exists("results")) dir.create("results/")
 
 #### user inputs ####
@@ -68,3 +68,5 @@ source("MPA_impl_enforcement.R")
 # Social discount rate
 source("social_discount.R")
 
+# Create figures for publication
+source("publication_figures.R")

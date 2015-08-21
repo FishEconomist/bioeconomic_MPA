@@ -2,15 +2,15 @@
 ##
 ############################## Basic model parameters ########################################
 # total model run time in years (e.g. 2001:2100 would be 100 years)
-time <- 2001:2051
-spinup <- 10 # number of years before "time" the model starts, results from spin-up years are not saved, all scenarios start as status quo
-tot_time <- (min(time)-10):max(time)
+time <- 2001:2002
+spinup <- 1 # number of years before "time" the model starts, results from spin-up years are not saved, all scenarios start as status quo
+tot_time <- (min(time)-spinup):max(time)
 
 # time step in years
 dt <- 1
 
 # replicates (should be more than 1 or fish_value.R onwards will not work)
-replicates <- c(1:50)
+replicates <- c(1)
 
 # cell size in km
 cell_size <- 20
@@ -26,13 +26,13 @@ virtual_fish_ratio <- 20000
 
 # create new protection scenarios? (TRUE creates new maps, but is slow. FALSE uses previously saved maps) 
 # very computationally expensive if TRUE
-protect_scen_new <- TRUE
+protect_scen_new <- F
 
 # plot during loops?
-time_loop_plot <- TRUE
+time_loop_plot <- FALSE
 
 # analysis mode (skips the loops if FALSE), or full model if TRUE
-full_model  <- TRUE
+full_model  <- F
 
 ############################# fish growth and reproduction #######################################
 # #Von Bertalanffy growth model parameters (Knickle and Rose 2013)
@@ -121,10 +121,10 @@ fixdist <- 75
 # protection scenarios to include in analysis current options include "Status_quo","MPAs_maxdist","MPAs_fixed","MPAs_targeted"
 # see protection_scenarios.R and functions.R for more information on protection scenarios
 # you must include "Status_quo" or cost evaluation will not work
-protect_scen <- c("Status_quo","MPAs_maxdist","MPAs_fixed","MPAs_targeted")
-protect_scen_colour <- c("purple","green","red","blue")
-# protect_scen <- c("MPAs_targeted")
-# protect_scen_colour <- c("blue")
+# protect_scen <- c("Status_quo","MPAs_maxdist","MPAs_fixed","MPAs_targeted")
+# protect_scen_colour <- c("purple","green","red","blue")
+protect_scen <- c("Status_quo","MPAs_targeted")
+protect_scen_colour <- c("red","blue")
 
 
 # country name for coastline download for new "coastal" MPA placement (from package maptools in data(wrld_simpl))

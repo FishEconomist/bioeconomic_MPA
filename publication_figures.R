@@ -144,8 +144,8 @@ Habitats <- spTransform(Habitats,CRS(proj))
 rm(wrld_simpl)
 coastal <- as.vector(gDistance(p,Canada,byid=T)<cell_size)
 
-per_prot <- data.frame(matrix(0,nrow=50,ncol=4))
-per_prot_table <- data.frame(matrix(0,nrow=4,ncol=4))
+per_prot <- data.frame(matrix(0,nrow=length(replicates),ncol=4))
+per_prot_table <- data.frame(matrix(0,nrow=length(protect_scen),ncol=4))
 names(per_prot) <- c('over','coast','breed','hab')
 names(per_prot_table) <- c('over','coast','breed','hab')
 
@@ -168,8 +168,8 @@ for(scenario in protect_scen){
         per_prot$breed[rep] <- percent_area(get(scenario),Breeding)
         per_prot$hab[rep] <- percent_area(get(scenario),Habitats)
     }
-    per_prot_table[protect_scen==scenario,] <- paste0(round(apply(per_prot,2,mean)*100,2)," (",round(apply(per_prot,2,sd)*100/sqrt(50),2),")")
-    per_prot <- data.frame(matrix(0,nrow=50,ncol=4))
+    per_prot_table[protect_scen==scenario,] <- paste0(round(apply(per_prot,2,mean)*100,2)," (",round(apply(per_prot,2,sd)*100/sqrt(length(replicates)),2),")")
+    per_prot <- data.frame(matrix(0,nrow=length(replicates),ncol=4))
     names(per_prot) <- c('over','coast','breed','hab')
 }
 
