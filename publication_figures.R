@@ -163,10 +163,10 @@ for(scenario in protect_scen){
     for(rep in replicates){
         assign(paste(scenario), readOGR(dsn=paste0(getwd(),"/shapefiles"), layer = paste0(scenario,"_",rep)))
         assign(paste(scenario), spTransform(get(scenario),CRS(proj)))
-        per_prot$over[rep] <- percent_area(get(scenario),EEZ)
-        per_prot$coast[rep] <- percent_area(get(scenario),p[coastal,])
-        per_prot$breed[rep] <- percent_area(get(scenario),Breeding)
-        per_prot$hab[rep] <- percent_area(get(scenario),Habitats)
+        per_prot$over[which(replicates==rep)] <- percent_area(get(scenario),EEZ)
+        per_prot$coast[which(replicates==rep)] <- percent_area(get(scenario),p[coastal,])
+        per_prot$breed[which(replicates==rep)] <- percent_area(get(scenario),Breeding)
+        per_prot$hab[which(replicates==rep)] <- percent_area(get(scenario),Habitats)
     }
     per_prot_table[protect_scen==scenario,] <- paste0(round(apply(per_prot,2,mean)*100,2)," (",round(apply(per_prot,2,sd)*100/sqrt(length(replicates)),2),")")
     per_prot <- data.frame(matrix(0,nrow=length(replicates),ncol=4))

@@ -2,15 +2,15 @@
 ##
 ############################## Basic model parameters ########################################
 # total model run time in years (e.g. 2001:2100 would be 100 years)
-time <- 2001:2002
-spinup <- 1 # number of years before "time" the model starts, results from spin-up years are not saved, all scenarios start as status quo
+time <- 2001:2051
+spinup <- 10 # number of years before "time" the model starts, results from spin-up years are not saved, all scenarios start as status quo
 tot_time <- (min(time)-spinup):max(time)
 
 # time step in years
 dt <- 1
 
 # replicates (should be more than 1 or fish_value.R onwards will not work)
-replicates <- c(1)
+replicates <- c(1:16)
 
 # cell size in km
 cell_size <- 20
@@ -33,6 +33,10 @@ time_loop_plot <- FALSE
 
 # analysis mode (skips the loops if FALSE), or full model if TRUE
 full_model  <- F
+
+# use connectivity matrices or random dispersal? If FALSE, adults and/or larvae will disperse randomly, otherwise they will disperse according to the connectivity matrices (source polygon as row names, settlement polygon as column names)
+adult_con_mat <- T
+larvae_con_mat <- T
 
 ############################# fish growth and reproduction #######################################
 # #Von Bertalanffy growth model parameters (Knickle and Rose 2013)
@@ -70,7 +74,7 @@ CC_SD <- 0.386696*1000              #(kg/km^2)
 
 ########################### Dispersal ##################################################
 # larval dispersal kernels are assumed to be exponential, e_fold_larvae is the e folding scale in km (the distance at which there will be fewer settlers by a factor of e). We assume that scale to be sqrt of 2cm/s*90d (avg current velocity * PLD) because we assume that the current is like a random walk
-e_fold_larvae <- sqrt(2/100000*60*60*24*90)
+e_fold_larvae <- 2/100000*60*60*24*90
 
 # adult dispersal kernels are also assumed to be exponential, e_fold_adult (in km) was calculated from data in Lawson & Rose 2000
 e_fold_adult  <- 74.139
