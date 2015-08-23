@@ -220,7 +220,7 @@ adult_disperse <- function(fish,poly,min_size_migration,hab_mat,pop_mat){
 BH_CC_mortality <- function(larvae,fish,CCs){
     fish_table <- summarise(group_by(fish,polygon),num=sum(polygon==polygon),weight=sum(weight))
     fish_table <- fish_table[fish_table$polygon %in% larvae$polygon,]
-    if(dim(fish_table)[1]<dim(larvae)[1]) fish_table <- rbind(fish_table,cbind(polygon=larvae$polygon[!(larvae$polygon %in% fish_table$polygon)],num=1,weight=0))    
+    if(nrow(fish_table)<nrow(larvae)) fish_table <- rbind(fish_table,cbind(polygon=larvae$polygon[!(larvae$polygon %in% fish_table$polygon)],num=1,weight=0))    
     larvae$new_recruits <- 0
     fish_avg_weighti <- mean(fish$weight)
     for(i in larvae$polygon){

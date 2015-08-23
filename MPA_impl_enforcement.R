@@ -5,7 +5,7 @@ fish_value_means$MPA_maintenance <- 0
 fish_value$MPA_maintenance <- 0
 for(scenario in protect_scen){
     for(rep in replicates){
-        assign(paste(scenario), readOGR(dsn=paste0(getwd(),"/shapefiles"), layer = paste0(scenario,"_",rep)))
+        assign(paste(scenario), readOGR(dsn=paste0(results_folder,"/shapefiles"), layer = paste0(scenario,"_",rep)))
         assign(paste(scenario), spTransform(get(scenario),CRS(proj)))
         fish_value$MPA_maintenance[fish_value$scenario==scenario&fish_value$rep==rep] <- gArea(get(scenario))/10^6*MPA_maintenance_cost
     }

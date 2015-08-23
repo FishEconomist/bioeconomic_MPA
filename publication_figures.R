@@ -1,12 +1,14 @@
+if(!file.exists(paste0(results_folder,"/figures"))) dir.create(paste0(results_folder,"/figures"))
+
 res <- 400
 qual <- 100
 
 ########## Figure 1 - map scenarios for rep 1 #################################
-jpeg(paste('figures/f1_scenarios.jpg'),height=20,width=17,units="cm",res=res,qual=qual)
+jpeg(paste0(results_folder,'/figures/f1_scenarios.jpg'),height=20,width=17,units="cm",res=res,qual=qual)
 layout(matrix(c(1,2,3,4),nrow=2))
 par(mar=c(1,1,1,1))
 for(scenario in protect_scen){
-    assign(paste(scenario), readOGR(dsn=paste0(getwd(),"/shapefiles"), layer = paste0(scenario,"_",1)))
+    assign(paste(scenario), readOGR(dsn=paste0(results_folder,"/shapefiles"), layer = paste0(scenario,"_",1)))
     assign(paste(scenario), spTransform(get(scenario),CRS(proj)))
     plot(EEZ)
     plot(get(scenario),col=protect_scen_colour[protect_scen==scenario],add=T)
@@ -17,11 +19,11 @@ dev.off()
 
 ########## Figure A1-49 - map scenarios for rep 1 #################################
 for(rep in 2:max(replicates)){
-    jpeg(paste0('figures/fA',rep,'_scenarios.jpg'),height=20,width=17,units="cm",res=res,qual=qual)
+    jpeg(paste0(results_folder,'/figures/fA',rep,'_scenarios.jpg'),height=20,width=17,units="cm",res=res,qual=qual)
     layout(matrix(c(1,2,3,4),nrow=2))
     par(mar=c(1,1,1,1))
     for(scenario in protect_scen){
-        assign(paste(scenario), readOGR(dsn=paste0(getwd(),"/shapefiles"), layer = paste0(scenario,"_",rep)))
+        assign(paste(scenario), readOGR(dsn=paste0(results_folder,"/shapefiles"), layer = paste0(scenario,"_",rep)))
         assign(paste(scenario), spTransform(get(scenario),CRS(proj)))
         plot(EEZ)
         plot(get(scenario),col=protect_scen_colour[protect_scen==scenario],add=T)
@@ -32,7 +34,7 @@ for(rep in 2:max(replicates)){
 
 
 ########## Figure 3 - plot of biomass over time #################################
-jpeg(paste('figures/f3_biomass.jpg'),height=20,width=17,units="cm",res=res,qual=qual)
+jpeg(paste0(results_folder,'/figures/f3_biomass.jpg'),height=20,width=17,units="cm",res=res,qual=qual)
 layout(matrix(c(1,2,3,4),nrow=2))
 for(scenario in protect_scen){   
     plot.new();box(bty="l")
@@ -47,7 +49,7 @@ for(scenario in protect_scen){
 dev.off()
 
 ########## Figure 4 - plot of catch biomass over time #################################
-jpeg(paste('figures/f4_catch.jpg'),height=20,width=17,units="cm",res=res,qual=qual)
+jpeg(paste0(results_folder,'/figures/f4_catch.jpg'),height=20,width=17,units="cm",res=res,qual=qual)
 layout(matrix(c(1,2,3,4),nrow=2))
 for(scenario in protect_scen){   
     plot.new();box(bty="l")
@@ -63,7 +65,7 @@ dev.off()
 
 
 ########## Figure 5 - distance from shore over time #################################
-jpeg(paste('figures/f5_distance.jpg'),height=20,width=17,units="cm",res=res,qual=qual)
+jpeg(paste0(results_folder,'/figures/f5_distance.jpg'),height=20,width=17,units="cm",res=res,qual=qual)
 layout(matrix(c(1,2,3,4),nrow=2))
 for(scenario in protect_scen){   
     plot.new();box(bty="l")
@@ -77,7 +79,7 @@ for(scenario in protect_scen){
 dev.off()
 
 ########## Figure 6 - Social Discount Rate #################################
-jpeg(paste('figures/f6_SDR.jpg'),height=20,width=17,units="cm",res=res,qual=qual)
+jpeg(paste0(results_folder,'/figures/f6_SDR.jpg'),height=20,width=17,units="cm",res=res,qual=qual)
 layout(matrix(c(1,2,3,4,5,6),nrow=3))
 par(mar=c(4,4,3,1))
 # cumulative plots
@@ -136,8 +138,8 @@ summary(fit)
 data(wrld_simpl)
 Canada <- wrld_simpl[wrld_simpl$NAME==country_name, ]
 Canada <- spTransform(Canada,CRS(proj))
-Habitats <- readOGR(dsn=paste0(getwd(),"/shapefiles"),layer="cod_habitat")
-Breeding <- readOGR(dsn=paste0(getwd(),"/shapefiles"),layer="cod_breeding")
+Habitats <- readOGR(dsn="shapefiles",layer="cod_habitat")
+Breeding <- readOGR(dsn="shapefiles",layer="cod_breeding")
 Breeding <- spTransform(Breeding,CRS(proj))
 Habitats <- spTransform(Habitats,CRS(proj))
 
@@ -161,7 +163,7 @@ percent_area <- function(a,b){
 
 for(scenario in protect_scen){
     for(rep in replicates){
-        assign(paste(scenario), readOGR(dsn=paste0(getwd(),"/shapefiles"), layer = paste0(scenario,"_",rep)))
+        assign(paste(scenario), readOGR(dsn=paste0(results_folder,"/shapefiles"), layer = paste0(scenario,"_",rep)))
         assign(paste(scenario), spTransform(get(scenario),CRS(proj)))
         per_prot$over[which(replicates==rep)] <- percent_area(get(scenario),EEZ)
         per_prot$coast[which(replicates==rep)] <- percent_area(get(scenario),p[coastal,])

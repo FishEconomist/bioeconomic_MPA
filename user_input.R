@@ -2,15 +2,15 @@
 ##
 ############################## Basic model parameters ########################################
 # total model run time in years (e.g. 2001:2100 would be 100 years)
-time <- 2001:2051
-spinup <- 10 # number of years before "time" the model starts, results from spin-up years are not saved, all scenarios start as status quo
+time <- 2001:2002
+spinup <- 1 # number of years before "time" the model starts, results from spin-up years are not saved, all scenarios start as status quo
 tot_time <- (min(time)-spinup):max(time)
 
 # time step in years
 dt <- 1
 
 # replicates (should be more than 1 or fish_value.R onwards will not work)
-replicates <- c(1:16)
+replicates <- c(1)
 
 # cell size in km
 cell_size <- 20
@@ -26,13 +26,13 @@ virtual_fish_ratio <- 20000
 
 # create new protection scenarios? (TRUE creates new maps, but is slow. FALSE uses previously saved maps) 
 # very computationally expensive if TRUE
-protect_scen_new <- F
+protect_scen_new <- T
 
 # plot during loops?
 time_loop_plot <- FALSE
 
 # analysis mode (skips the loops if FALSE), or full model if TRUE
-full_model  <- F
+full_model  <- T
 
 # use connectivity matrices or random dispersal? If FALSE, adults and/or larvae will disperse randomly, otherwise they will disperse according to the connectivity matrices (source polygon as row names, settlement polygon as column names)
 adult_con_mat <- T

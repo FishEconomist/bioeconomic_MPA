@@ -1,7 +1,9 @@
 # housekeeping
 rm(list=ls())
 if(length(dev.list()["RStudioGD"])>1) dev.off(dev.list()["RStudioGD"])
-if(!file.exists("results")) dir.create("results/")
+# specifiy folder for results
+results_folder <- "G:/bioeconomic_results_test2"
+if(!file.exists(results_folder)) dir.create(results_folder)
 
 #### user inputs ####
 source("user_input.R")

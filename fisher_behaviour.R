@@ -70,8 +70,8 @@ if(biomass>minimum_fishable_biomass){
     # write fish and catch to results folder
     if(length(catch)<1) catch <- data.frame(age=NA,polygon=NA,sex=NA,length=NA,weight=NA)
     if(t>=min(time)){
-        write.csv(fish,paste0("results/",scenario,"_fish_",t,"_rep_",rep,".csv"))
-        write.csv(catch,paste0("results/",scenario,"_catch_",t,"_rep_",rep,".csv"))
+        write.csv(fish,paste0(results_folder,"/",scenario,"_fish_",t,"_rep_",rep,".csv"))
+        write.csv(catch,paste0(results_folder,"/",scenario,"_catch_",t,"_rep_",rep,".csv"))
     }
     
     
@@ -81,9 +81,9 @@ if(biomass>minimum_fishable_biomass){
     print("WARNING: Moratorium is activated")
     if(t>=min(time)){
         if(length(fish)<1) fish <- data.frame(age=NA,polygon=NA,sex=NA,length=NA,weight=NA)
-        write.csv(fish,paste0("results/",scenario,"_fish_",t,"_rep_",rep,".csv"))
+        write.csv(fish,paste0(results_folder,"/",scenario,"_fish_",t,"_rep_",rep,".csv"))
         catch <- data.frame(age=NA,polygon=NA,sex=NA,length=NA,weight=NA)
-        write.csv(catch,paste0("results/",scenario,"_catch_",t,"_rep_",rep,".csv"))
+        write.csv(catch,paste0(results_folder,"/",scenario,"_catch_",t,"_rep_",rep,".csv"))
     }
 }
 
@@ -94,8 +94,8 @@ if(length(row.names(fish))==0){
         catch <- data.frame(age=NA,polygon=NA,sex=NA,length=NA,weight=NA)
         fish <- data.frame(age=NA,polygon=NA,sex=NA,length=NA,weight=NA)
         if(t>=min(time)){
-            write.csv(fish,paste0("results/",scenario,"_fish_",i,"_rep_",rep,".csv"))
-            write.csv(catch,paste0("results/",scenario,"_catch_",i,"_rep_",rep,".csv"))
+            write.csv(fish,paste0(results_folder,"/",scenario,"_fish_",i,"_rep_",rep,".csv"))
+            write.csv(catch,paste0(results_folder,"/",scenario,"_catch_",i,"_rep_",rep,".csv"))
         }
     }
     break
