@@ -2,15 +2,15 @@
 ##
 ############################## Basic model parameters ########################################
 # total model run time in years (e.g. 2001:2100 would be 100 years)
-time <- 2001:2002
-spinup <- 1 # number of years before "time" the model starts, results from spin-up years are not saved, all scenarios start as status quo
+time <- 2001:2051
+spinup <- 10 # number of years before "time" the model starts, results from spin-up years are not saved, all scenarios start as status quo
 tot_time <- (min(time)-spinup):max(time)
 
 # time step in years
 dt <- 1
 
 # replicates (should be more than 1 or fish_value.R onwards will not work)
-replicates <- c(1)
+replicates <- c(1:15)
 
 # cell size in km
 cell_size <- 20
@@ -26,7 +26,7 @@ virtual_fish_ratio <- 20000
 
 # create new protection scenarios? (TRUE creates new maps, but is slow. FALSE uses previously saved maps) 
 # very computationally expensive if TRUE
-protect_scen_new <- T
+protect_scen_new <- F
 
 # plot during loops?
 time_loop_plot <- FALSE
@@ -74,7 +74,7 @@ CC_SD <- 0.386696*1000              #(kg/km^2)
 
 ########################### Dispersal ##################################################
 # larval dispersal kernels are assumed to be exponential, e_fold_larvae is the e folding scale in km (the distance at which there will be fewer settlers by a factor of e). We assume that scale to be sqrt of 2cm/s*90d (avg current velocity * PLD) because we assume that the current is like a random walk
-e_fold_larvae <- 2/100000*60*60*24*90
+e_fold_larvae <- sqrt(2/100000*60*60*24*90)
 
 # adult dispersal kernels are also assumed to be exponential, e_fold_adult (in km) was calculated from data in Lawson & Rose 2000
 e_fold_adult  <- 74.139

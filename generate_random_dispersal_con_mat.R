@@ -1,3 +1,5 @@
+results_folder <- "D:/bioeconomic_results_test"
+
 require(dplyr)
 ### Generate random connectivity matrix
 
@@ -15,20 +17,19 @@ source("basic_grid.R")
 # Protection scenarios (Figure 1)
 rep=1
 source("protection_scenarios.R")
+tot_time <- 1991:2051
 
 # set n
-n=1000
+n=10000
 
 #### con_mat for adults ####
 for(t in tot_time[1:5]){
-        
+    print(t)   
     fish <- data.frame(age=5,
-                       polygon=rep(1:length(p),each=n),
-                       sex=round(runif(n*length(p),0,1)),
+                       polygon=rep(sort(unique(hab_mat[hab_mat!=0])),each=n),
+                       sex=round(runif(n*length(hab_mat[hab_mat!=0]),0,1)),
                        length=10
     )
-    fish <- fish[(fish$polygon %in% unique(as.vector(hab_mat))),]
-    
     fish$old_poly <- fish$polygon
     
     fish <- bind_rows(lapply(unique(fish$polygon), function(x) adult_disperse(fish[fish$polygon==x,],x,0,hab_mat,pop_mat)))
