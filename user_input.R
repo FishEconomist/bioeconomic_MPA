@@ -10,7 +10,7 @@ tot_time <- (min(time)-spinup):max(time)
 dt <- 1
 
 # replicates (should be more than 1 or fish_value.R onwards will not work)
-replicates <- c(1:15)
+replicates <- c(1:50)
 
 # cell size in km
 cell_size <- 20
@@ -26,17 +26,17 @@ virtual_fish_ratio <- 20000
 
 # create new protection scenarios? (TRUE creates new maps, but is slow. FALSE uses previously saved maps) 
 # very computationally expensive if TRUE
-protect_scen_new <- F
+protect_scen_new <- T
 
 # plot during loops?
 time_loop_plot <- FALSE
 
 # analysis mode (skips the loops if FALSE), or full model if TRUE
-full_model  <- T
+full_model  <- TRUE
 
 # use connectivity matrices or random dispersal? If FALSE, adults and/or larvae will disperse randomly, otherwise they will disperse according to the connectivity matrices (source polygon as row names, settlement polygon as column names)
-adult_con_mat <- T
-larvae_con_mat <- T
+adult_con_mat <- TRUE
+larvae_con_mat <- TRUE
 
 ############################# fish growth and reproduction #######################################
 # #Von Bertalanffy growth model parameters (Knickle and Rose 2013)
