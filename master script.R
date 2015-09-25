@@ -1,7 +1,9 @@
 # housekeeping
 rm(list=ls())
-if(length(dev.list()["RStudioGD"])>=1) dev.off(dev.list()["RStudioGD"])
-if(!file.exists("results")) dir.create("results/")
+if(length(dev.list()["RStudioGD"])>1) dev.off(dev.list()["RStudioGD"])
+# specifiy folder for results
+results_folder <- "D:/bioeconomic_results_test"
+if(!file.exists(results_folder)) dir.create(results_folder)
 
 #### user inputs ####
 source("user_input.R")
@@ -68,3 +70,5 @@ source("MPA_impl_enforcement.R")
 # Social discount rate
 source("social_discount.R")
 
+# Create figures for publication
+source("publication_figures.R")

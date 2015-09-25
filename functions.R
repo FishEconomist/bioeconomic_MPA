@@ -220,7 +220,7 @@ adult_disperse <- function(fish,poly,min_size_migration,hab_mat,pop_mat){
 BH_CC_mortality <- function(larvae,fish,CCs){
     fish_table <- summarise(group_by(fish,polygon),num=sum(polygon==polygon),weight=sum(weight))
     fish_table <- fish_table[fish_table$polygon %in% larvae$polygon,]
-    if(dim(fish_table)[1]<dim(larvae)[1]) fish_table <- rbind(fish_table,cbind(polygon=larvae$polygon[!(larvae$polygon %in% fish_table$polygon)],num=1,weight=0))    
+    if(nrow(fish_table)<nrow(larvae)) fish_table <- rbind(fish_table,cbind(polygon=larvae$polygon[!(larvae$polygon %in% fish_table$polygon)],num=1,weight=0))    
     larvae$new_recruits <- 0
     fish_avg_weighti <- mean(fish$weight)
     for(i in larvae$polygon){
@@ -264,4 +264,15 @@ getBigPolys <- function(poly, minarea=0.01) {
 # calculates socially discounted values
 SDR_value <- function(t0,t,value,i){
     value*(1/(1+SDR[i])^(t-t0))
+}
+
+#### function for dispersal based on connectivity matrices ####
+con_mat_disperse <- function(polygon,numbers,con_mat){
+    con_mat %>% add_rownames("release_site") %>% 
+        filter(release_site %in% polygon) %>%
+        mutate(number=lapply(release_site,function(x) numbers[polygon==as.numeric(x)])) %>% 
+        gather(settle_site,percent,-release_site,-number) %>% 
+        filter(percent>0) %>% 
+        group_by(release_site) %>% 
+        do(data.frame(settlement_site=sample(.$settle_site,mean(as.numeric(.$number)),prob=.$percent,replace=TRUE))) 
 }

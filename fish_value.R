@@ -14,7 +14,7 @@ files_df <- expand.grid(replicates,protect_scen,time)
 names(files_df) <- c('rep','scenario','time')
 
 
-files <- paste0("results/",files_df$scenario,"_fish_",files_df$time,"_rep_",files_df$rep,".csv")
+files <- paste0(results_folder,"/",files_df$scenario,"_fish_",files_df$time,"_rep_",files_df$rep,".csv")
 fish <- lapply(files,read_csv,col_type=list(col_skip() ,col_skip(),col_skip(),col_skip(),col_skip(),col_double()))
 #fish <- bind_rows(lapply(1:length(files),function(i) cbind(fish[[i]],files_df[i,])))
 fish_long <- data.frame(cbind(files_df,biomass=unlist(lapply(fish,sum))))
@@ -43,7 +43,7 @@ for(scenario in protect_scen){
 }
 
 ########### catch ################
-files <- paste0("results/",files_df$scenario,"_catch_",files_df$time,"_rep_",files_df$rep,".csv")
+files <- paste0(results_folder,"/",files_df$scenario,"_catch_",files_df$time,"_rep_",files_df$rep,".csv")
 catch <- lapply(files,read_csv,col_type=list(col_skip() ,col_double(),col_double(),col_double(),col_double(),col_double()))
 catch <- bind_rows(lapply(1:length(files),function(i) cbind(catch[[i]],files_df[i,])))
 

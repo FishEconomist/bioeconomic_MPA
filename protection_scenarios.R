@@ -1,6 +1,7 @@
 #### Spatial base layer ####
 # Protection scenarios (Figure 1)
 print("Now calculating: Protection scenarios")
+if(!file.exists(paste0(results_folder,"/shapefiles"))) dir.create(paste0(results_folder,"/shapefiles"))
 
 if(rep==min(replicates)){
     # MPA size frequency obtained from WDPA database downloaded from http://www.protectedplanet.net/search?marine=1 in March 2015
@@ -156,14 +157,14 @@ if(protect_scen_new){
     
     #### save scenarios ####
     for(scenario in protect_scen){
-        writeOGR(get(scenario),dsn=getwd(), layer = paste0("shapefiles/",scenario,"_",rep), driver = "ESRI Shapefile",overwrite_layer=T)
+        writeOGR(get(scenario),dsn=paste0(results_folder,"/shapefiles"), layer = paste0(scenario,"_",rep), driver = "ESRI Shapefile",overwrite_layer=T)
     }
     
     
 } else {
     #### read scenarios
     for(scenario in protect_scen){
-        assign(paste(scenario), readOGR(dsn=paste0(getwd(),"/shapefiles"), layer = paste0(scenario,"_",rep)))
+        assign(paste(scenario), readOGR(dsn=paste0(results_folder,"/shapefiles"), layer = paste0(scenario,"_",rep)))
         assign(paste(scenario), spTransform(get(scenario),CRS(proj)))
     }
 }
