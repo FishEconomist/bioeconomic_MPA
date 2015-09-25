@@ -90,63 +90,63 @@ where `R` is the population growth rate for cell `i`, `larvae[i]` is the number 
 where the `relative_biomass` is the biomass in cell `i` divided by the maximum biomass in the model domain and `relative_distance` is the actual distance to shore for cell `i` divided by the mean distance to shore for all the cells in the model domain.
 
 ## Modules and Sub-modules
-#### user_input.R
+#### [user_input.R](https://github.com/remi-daigle/bioeconomic_MPA/blob/master/user_input.R)
 This sub-module has all of the direct user inputs described in the table above. Modify the values to customize the biological, economic, or spatial parameters of your model. You will also find the logical switches (TRUE/FALSE) to turn on/off the analysis mode (analyzing data that was previously written to disk or running the full model), the time loop plots, as well as switches that dictate the use of connectivity matrices (or alternatively the random dispersal function) and the generation of new protection scenarios (or alternatively using those previously written to disk).
 
-#### functions.R
+#### [functions.R](https://github.com/remi-daigle/bioeconomic_MPA/blob/master/functions.R)
 This sub-module has all the custom functions created specifically for this toolbox. These functions are not contained in downloadable packages.
 
-#### time_loop_plots.R
+#### [time_loop_plots.R](https://github.com/remi-daigle/bioeconomic_MPA/blob/master/time_loop_plots.R)
 This sub-module is a script used to plot some pertinent results between each time loops so you can keep an eye on your model as it runs. This will slow performance slightly, but is very handy for troubleshooting
 
-#### publication_figures.R
+#### [publication_figures.R](https://github.com/remi-daigle/bioeconomic_MPA/blob/master/publication_figures.R)
 This sub-module generates the figures used in our final publication. You may or may not want to focus on different aspects of your data.
 
 ### Spatial Base Layer
 The sub-modules within this module will provide the spatial base layer, it defines the model domain from input given in `user_input.R`
 
-#### basic_grid.R
+#### [basic_grid.R](https://github.com/remi-daigle/bioeconomic_MPA/blob/master/basic_grid.R)
 This sub-module will take the given `EEZ` and divides it into the basic grid cells used in the model.
 
-#### protection_scenarios.R
+#### [protection_scenarios.R](https://github.com/remi-daigle/bioeconomic_MPA/blob/master/protection_scenarios.R)
 This sub-module will either generate new protection scenarios, or will load them from disk depending on what was set in `user_inputs.R`.
 
 ### Growth and Reproduction
 The sub-modules within this module dictates the growth and reproduction of individual fish
 
-#### ind_growth_model.R
+#### [ind_growth_model.R](https://github.com/remi-daigle/bioeconomic_MPA/blob/master/ind_growth_model.R)
 This sub-module controls the growth of individual fish using the Von Bertalanffy growth model
 and the length-weight relationship defined in the equations above.
 
-#### reproduct_output.R
+#### [reproduct_output.R](https://github.com/remi-daigle/bioeconomic_MPA/blob/master/reproduct_output.R)
 This sub-module dictates where eggs are released (_i.e._ in breeding habitats) and determines the number of eggs produced from the spawning stock biomass which exists nearest each breeding habitat. Larval mortality is enforced herein.
 
 ### Dispersal
 The sub-modules within this module will disperse adults and larvae.
 
-#### larval_dispersal.R
+#### [larval_dispersal.R](https://github.com/remi-daigle/bioeconomic_MPA/blob/master/larval_dispersal.R)
 This sub-module uses either the random dispersal function or the connectivity matrices to disperse the larvae. Settlement mortality is enforced herein. If using custom connectivity matrices please place them in the con_mat directory and follow the naming convention of `con_mat_PHASE_YEAR.csv` where `PHASE` is either `adult` or `larvae` and `YEAR` is the calendar year (_e.g._ 1998) and have source polygon as row names, settlement polygon as column names.
 
-#### adult_dispersal.R
+#### [adult_dispersal.R](https://github.com/remi-daigle/bioeconomic_MPA/blob/master/adult_dispersal.R)
 This sub-module uses either the random dispersal function or the connectivity matrices to disperse the adults. 
 
 ### Harvesting
 The sub-modules within this module regulates the management and behaviour of the fishing industry.
 
-#### fisher_management.R
+#### [fisher_management.R](https://github.com/remi-daigle/bioeconomic_MPA/blob/master/fisher_managment.R)
 This sub-module will estimate the fisheries quota and set which grid cells are "fishable" (_i.e._ not covered by an active MPA). 
 
-#### fisher_behaviour.R
+#### [fisher_behaviour.R](https://github.com/remi-daigle/bioeconomic_MPA/blob/master/fisher_behaviour.R)
 This sub-module calculates fishing effort and allows fishermen catch fish by minimizing effort. 
 
 ### Cost Evaluation
 The sub-modules within this module will evaluate the value and costs of the fisheries over time.
 
-#### fish_value.R
+#### [fish_value.R](https://github.com/remi-daigle/bioeconomic_MPA/blob/master/fish_value.R)
 This sub-module will evaluate operating costs and calculate landed value of all fish caught. 
 
-#### MPA_impl_enforcement.R
+#### [MPA_impl_enforcement.R](https://github.com/remi-daigle/bioeconomic_MPA/blob/master/MPA_impl_enforcement.R)
 This sub-module will evaluate the cost of enforcing the MPA network for each scenario. we did not use these costs in our case study as we considered these costs external to the fishing industry. 
 
-#### social_discount.R
+#### [social_discount.R](https://github.com/remi-daigle/bioeconomic_MPA/blob/master/social_discount.R)
 This sub-module applies the social discount rates to the net catch values to calculate the net present values. 
