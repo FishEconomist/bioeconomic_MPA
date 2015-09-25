@@ -151,6 +151,8 @@ p1 <- ggplot(gathered,aes(x=time,y=cumsumvalue,colour=scenario,xlab="test"))+
         labs(x="Year",y=expression(paste("Cumulative Net Present Value (10"^"6"," CAD)",sep="")))
 
 p2 <- ggplot(gathered[gathered$time==2051,],aes(x=scenario,y=cumsumvalue,fill=scenario))+
+    # geom_jitter(size=0.5)+
+    # geom_violin(alpha=0.7)+
         geom_boxplot()+
         theme_classic()+
         scale_fill_manual(values=protect_scen_colour,name="",labels = gsub("_"," ",protect_scen))+
@@ -160,7 +162,7 @@ p2 <- ggplot(gathered[gathered$time==2051,],aes(x=scenario,y=cumsumvalue,fill=sc
               strip.text=element_text(face="bold"),
               axis.text.x=element_text(angle=20,hjust=1),
               text=element_text(size=textsize))+
-        labs(x="",y=expression(paste("Total Net Present Value (10"^"6"," CAD)",sep="")))
+        labs(x="",y=expression(paste("Net Present Value (10"^"6"," CAD)",sep="")))
 legend <- g[[which(sapply(g, function(x) x$name) == "guide-box")]]
 lheight <- sum(legend$height)
 
