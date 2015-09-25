@@ -451,22 +451,26 @@ new_recruits[i] &lt;- new_total[i]-fish[i]
 <a id="modules-and-sub-modules" class="anchor" href="#modules-and-sub-modules" aria-hidden="true"><span class="octicon octicon-link"></span></a>Modules and Sub-modules</h2>
 
 <h4>
-<a id="user_inputr" class="anchor" href="#user_inputr" aria-hidden="true"><span class="octicon octicon-link"></span></a>user_input.R</h4>
+<a id="user_inputr" class="anchor" href="#user_inputr" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="https://github.com/remi-daigle/bioeconomic_MPA/blob/master/user_input.R">user_input.R</a>
+</h4>
 
 <p>This sub-module has all of the direct user inputs described in the table above. Modify the values to customize the biological, economic, or spatial parameters of your model. You will also find the logical switches (TRUE/FALSE) to turn on/off the analysis mode (analyzing data that was previously written to disk or running the full model), the time loop plots, as well as switches that dictate the use of connectivity matrices (or alternatively the random dispersal function) and the generation of new protection scenarios (or alternatively using those previously written to disk).</p>
 
 <h4>
-<a id="functionsr" class="anchor" href="#functionsr" aria-hidden="true"><span class="octicon octicon-link"></span></a>functions.R</h4>
+<a id="functionsr" class="anchor" href="#functionsr" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="https://github.com/remi-daigle/bioeconomic_MPA/blob/master/functions.R">functions.R</a>
+</h4>
 
 <p>This sub-module has all the custom functions created specifically for this toolbox. These functions are not contained in downloadable packages.</p>
 
 <h4>
-<a id="time_loop_plotsr" class="anchor" href="#time_loop_plotsr" aria-hidden="true"><span class="octicon octicon-link"></span></a>time_loop_plots.R</h4>
+<a id="time_loop_plotsr" class="anchor" href="#time_loop_plotsr" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="https://github.com/remi-daigle/bioeconomic_MPA/blob/master/time_loop_plots.R">time_loop_plots.R</a>
+</h4>
 
 <p>This sub-module is a script used to plot some pertinent results between each time loops so you can keep an eye on your model as it runs. This will slow performance slightly, but is very handy for troubleshooting</p>
 
 <h4>
-<a id="publication_figuresr" class="anchor" href="#publication_figuresr" aria-hidden="true"><span class="octicon octicon-link"></span></a>publication_figures.R</h4>
+<a id="publication_figuresr" class="anchor" href="#publication_figuresr" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="https://github.com/remi-daigle/bioeconomic_MPA/blob/master/publication_figures.R">publication_figures.R</a>
+</h4>
 
 <p>This sub-module generates the figures used in our final publication. You may or may not want to focus on different aspects of your data.</p>
 
@@ -476,12 +480,14 @@ new_recruits[i] &lt;- new_total[i]-fish[i]
 <p>The sub-modules within this module will provide the spatial base layer, it defines the model domain from input given in <code>user_input.R</code></p>
 
 <h4>
-<a id="basic_gridr" class="anchor" href="#basic_gridr" aria-hidden="true"><span class="octicon octicon-link"></span></a>basic_grid.R</h4>
+<a id="basic_gridr" class="anchor" href="#basic_gridr" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="https://github.com/remi-daigle/bioeconomic_MPA/blob/master/basic_grid.R">basic_grid.R</a>
+</h4>
 
 <p>This sub-module will take the given <code>EEZ</code> and divides it into the basic grid cells used in the model.</p>
 
 <h4>
-<a id="protection_scenariosr" class="anchor" href="#protection_scenariosr" aria-hidden="true"><span class="octicon octicon-link"></span></a>protection_scenarios.R</h4>
+<a id="protection_scenariosr" class="anchor" href="#protection_scenariosr" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="https://github.com/remi-daigle/bioeconomic_MPA/blob/master/protection_scenarios.R">protection_scenarios.R</a>
+</h4>
 
 <p>This sub-module will either generate new protection scenarios, or will load them from disk depending on what was set in <code>user_inputs.R</code>.</p>
 
@@ -491,13 +497,15 @@ new_recruits[i] &lt;- new_total[i]-fish[i]
 <p>The sub-modules within this module dictates the growth and reproduction of individual fish</p>
 
 <h4>
-<a id="ind_growth_modelr" class="anchor" href="#ind_growth_modelr" aria-hidden="true"><span class="octicon octicon-link"></span></a>ind_growth_model.R</h4>
+<a id="ind_growth_modelr" class="anchor" href="#ind_growth_modelr" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="https://github.com/remi-daigle/bioeconomic_MPA/blob/master/ind_growth_model.R">ind_growth_model.R</a>
+</h4>
 
 <p>This sub-module controls the growth of individual fish using the Von Bertalanffy growth model
 and the length-weight relationship defined in the equations above.</p>
 
 <h4>
-<a id="reproduct_outputr" class="anchor" href="#reproduct_outputr" aria-hidden="true"><span class="octicon octicon-link"></span></a>reproduct_output.R</h4>
+<a id="reproduct_outputr" class="anchor" href="#reproduct_outputr" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="https://github.com/remi-daigle/bioeconomic_MPA/blob/master/reproduct_output.R">reproduct_output.R</a>
+</h4>
 
 <p>This sub-module dictates where eggs are released (<em>i.e.</em> in breeding habitats) and determines the number of eggs produced from the spawning stock biomass which exists nearest each breeding habitat. Larval mortality is enforced herein.</p>
 
@@ -507,12 +515,14 @@ and the length-weight relationship defined in the equations above.</p>
 <p>The sub-modules within this module will disperse adults and larvae.</p>
 
 <h4>
-<a id="larval_dispersalr" class="anchor" href="#larval_dispersalr" aria-hidden="true"><span class="octicon octicon-link"></span></a>larval_dispersal.R</h4>
+<a id="larval_dispersalr" class="anchor" href="#larval_dispersalr" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="https://github.com/remi-daigle/bioeconomic_MPA/blob/master/larval_dispersal.R">larval_dispersal.R</a>
+</h4>
 
 <p>This sub-module uses either the random dispersal function or the connectivity matrices to disperse the larvae. Settlement mortality is enforced herein. If using custom connectivity matrices please place them in the con_mat directory and follow the naming convention of <code>con_mat_PHASE_YEAR.csv</code> where <code>PHASE</code> is either <code>adult</code> or <code>larvae</code> and <code>YEAR</code> is the calendar year (<em>e.g.</em> 1998) and have source polygon as row names, settlement polygon as column names.</p>
 
 <h4>
-<a id="adult_dispersalr" class="anchor" href="#adult_dispersalr" aria-hidden="true"><span class="octicon octicon-link"></span></a>adult_dispersal.R</h4>
+<a id="adult_dispersalr" class="anchor" href="#adult_dispersalr" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="https://github.com/remi-daigle/bioeconomic_MPA/blob/master/adult_dispersal.R">adult_dispersal.R</a>
+</h4>
 
 <p>This sub-module uses either the random dispersal function or the connectivity matrices to disperse the adults. </p>
 
@@ -522,12 +532,14 @@ and the length-weight relationship defined in the equations above.</p>
 <p>The sub-modules within this module regulates the management and behaviour of the fishing industry.</p>
 
 <h4>
-<a id="fisher_managementr" class="anchor" href="#fisher_managementr" aria-hidden="true"><span class="octicon octicon-link"></span></a>fisher_management.R</h4>
+<a id="fisher_managementr" class="anchor" href="#fisher_managementr" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="https://github.com/remi-daigle/bioeconomic_MPA/blob/master/fisher_managment.R">fisher_management.R</a>
+</h4>
 
 <p>This sub-module will estimate the fisheries quota and set which grid cells are "fishable" (<em>i.e.</em> not covered by an active MPA). </p>
 
 <h4>
-<a id="fisher_behaviourr" class="anchor" href="#fisher_behaviourr" aria-hidden="true"><span class="octicon octicon-link"></span></a>fisher_behaviour.R</h4>
+<a id="fisher_behaviourr" class="anchor" href="#fisher_behaviourr" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="https://github.com/remi-daigle/bioeconomic_MPA/blob/master/fisher_behaviour.R">fisher_behaviour.R</a>
+</h4>
 
 <p>This sub-module calculates fishing effort and allows fishermen catch fish by minimizing effort. </p>
 
@@ -537,17 +549,20 @@ and the length-weight relationship defined in the equations above.</p>
 <p>The sub-modules within this module will evaluate the value and costs of the fisheries over time.</p>
 
 <h4>
-<a id="fish_valuer" class="anchor" href="#fish_valuer" aria-hidden="true"><span class="octicon octicon-link"></span></a>fish_value.R</h4>
+<a id="fish_valuer" class="anchor" href="#fish_valuer" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="https://github.com/remi-daigle/bioeconomic_MPA/blob/master/fish_value.R">fish_value.R</a>
+</h4>
 
 <p>This sub-module will evaluate operating costs and calculate landed value of all fish caught. </p>
 
 <h4>
-<a id="mpa_impl_enforcementr" class="anchor" href="#mpa_impl_enforcementr" aria-hidden="true"><span class="octicon octicon-link"></span></a>MPA_impl_enforcement.R</h4>
+<a id="mpa_impl_enforcementr" class="anchor" href="#mpa_impl_enforcementr" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="https://github.com/remi-daigle/bioeconomic_MPA/blob/master/MPA_impl_enforcement.R">MPA_impl_enforcement.R</a>
+</h4>
 
 <p>This sub-module will evaluate the cost of enforcing the MPA network for each scenario. we did not use these costs in our case study as we considered these costs external to the fishing industry. </p>
 
 <h4>
-<a id="social_discountr" class="anchor" href="#social_discountr" aria-hidden="true"><span class="octicon octicon-link"></span></a>social_discount.R</h4>
+<a id="social_discountr" class="anchor" href="#social_discountr" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="https://github.com/remi-daigle/bioeconomic_MPA/blob/master/social_discount.R">social_discount.R</a>
+</h4>
 
 <p>This sub-module applies the social discount rates to the net catch values to calculate the net present values. </p>
       </section>
