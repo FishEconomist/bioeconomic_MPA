@@ -48,7 +48,7 @@ ggplot(fish_long,aes(x=time,y=biomass,colour=scenario))+
           text=element_text(size=textsize))+
     labs(x="Year",y="Total Stock Biomass (t)")+
     scale_colour_manual(values=protect_scen_colour,
-                        labels=protect_scen_names)
+                        labels=protect_scen_names,name="")
 dev.off()
     
 ########## Figure 4 - plot of catch biomass over time #################################
@@ -60,7 +60,7 @@ ggplot(fish_value,aes(x=time,y=tot_catch,colour=scenario))+
           text=element_text(size=textsize))+
     labs(x="Year",y="Total catch (t)")+
     scale_colour_manual(values=protect_scen_colour,
-                        labels=protect_scen_names)
+                        labels=protect_scen_names,name="")
 dev.off()
 
 
@@ -73,7 +73,7 @@ ggplot(fish_value,aes(x=time,y=dist/1000,colour=scenario))+
           text=element_text(size=textsize))+
     labs(x="Year",y="Mean distance from shore (km)")+
     scale_colour_manual(values=protect_scen_colour,
-                        labels=protect_scen_names)
+                        labels=protect_scen_names,name="")
 dev.off()
 
 
@@ -113,7 +113,7 @@ jpeg(paste0(results_folder,'/figures/f6_SDR.jpg'),height=20,width=17,units="cm",
 p1 <- ggplot(gathered,aes(x=time,y=cumsumvalue,colour=scenario,xlab="test"))+
         geom_smooth(cex=1.5)+
         theme_classic()+
-        scale_colour_manual(values=protect_scen_colour,name="",labels = protect_scen_names)+
+        scale_colour_manual(values=protect_scen_colour,name="",labels = protect_scen_names,name="")+
         facet_wrap(~SDR,ncol=1,scale="free_x")+
         theme(strip.background=element_blank(),
               legend.position="none",
@@ -126,7 +126,7 @@ p2 <- ggplot(gathered[gathered$time==2051,],aes(x=scenario,y=cumsumvalue,fill=sc
     # geom_violin(alpha=0.7)+
         geom_boxplot()+
         theme_classic()+
-        scale_fill_manual(values=protect_scen_colour,name="",labels = protect_scen_names)+
+        scale_fill_manual(values=protect_scen_colour,name="",labels = protect_scen_names,name="")+
         facet_wrap(~SDR,ncol=1,scale="free_x")+
         theme(strip.background=element_blank(),
               legend.position="none",
