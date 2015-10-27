@@ -59,7 +59,7 @@ _fixdist_| 75 | The fixed distance for setting MPA distance in km in fixed dista
 _protect_scen_| CHARACTER | Short form names for the scenario names, used in computation (no spaces please) | user defined
 _protect_scen_names_| CHARACTER| Long form names for the scenario names, used in plotting, same order as _protect_scen_ | user defined
 _protect_scen_colour_| CHARACTER| Colours used in plotting the scenarios, same order as _protect_scen_| user defined
-_country_name_| 1| The time step in years| user defined
+_country_name_| CHARACTER | Country name for coastline download for new "coastal" MPA placement (from package maptools in data(wrld_simpl))| user defined
 _MPAs_coast_|SpatialPolygonsDataFrame | COASTAL Marine Protected Areas in Atlantic Canada| IUCN and UNEP-WCMC, 2015
 _MPAs_mar_|SpatialPolygonsDataFrame | MARINE Marine Protected Areas in Atlantic Canada| IUCN and UNEP-WCMC, 2015
 _MPAs_AOI_|SpatialPolygonsDataFrame | Areas of Interest identified by DFO as potential areas for future MPAs. Not used in the latest version of the toolkit| [DFO](http://www.dfo-mpo.gc.ca/oceans/marineareas-zonesmarines/mpa-zpm/index-eng.htm)
