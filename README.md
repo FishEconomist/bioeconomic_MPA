@@ -33,8 +33,8 @@ _Linf_SD_ |5.34 |Von Bertalanffy growth model parameter - standard deviation asy
 _k_mean_| 0.13|Von Bertalanffy growth model parameters - mean growth coefficient (1/year)| Knickle and Rose 2013
 _k_SD_|0.1 |Von Bertalanffy growth model parameters - standard deviation growth coefficient (1/year)| Knickle and Rose 2013
 _t0_|0.18|Von Bertalanffy growth model parameters - x intercept (year) | Knickle and Rose 2013
-_l_to_w_int_| 1| The time step in years| Knickle and Rose 2013
-_l_to_w_power_| 1| The time step in years| Knickle and Rose 2013
+_l_to_w_int_|0.000011| The intercept in the Length-weight relationship | Knickle and Rose 2013
+_l_to_w_power_| 2.91| The power in the Length-weight relationship | Knickle and Rose 2013
 _age_mat_steepness_| 2.5 | Steepness of the logitic curve for age at sexual maturity. Fish begin maturing at 2 y, 50% at 4 y and all are mature at 6y | user defined
 _age_mat_sigmoid_| 4 | Sigmoid of the logitic curve for age at sexual maturity. Fish begin maturing at 2 y, 50% at 4 y and all are mature at 6y | user defined
 _fecundity_| 0.5*10^6 | Size dependent fecundity (eggs per kg of female)| REF
@@ -56,8 +56,9 @@ _min_size_| 38| Minimum size fish caught by nets (cm)| Feekings et al. 2013
 _MPA_coverage_| 0.1 | Target protection level in proportion (e.g. 0.2 is 20% protection)| [DFO](http://www.dfo-mpo.gc.ca/oceans/publications/dmpaf-eczpm/framework-cadre2011-eng.asp)
 _CtoM_| 0.0009 | Coastal:marine ratio for MPAs (e.g. CtoM <- 0.4 is 60% marine and 40% coastal in terms of area) | IUCN and UNEP-WCMC, 2015
 _fixdist_| 75 | The fixed distance for setting MPA distance in km in fixed distance scenario. Set to approximately the mean adult dispersal distance | Lawson & Rose 2000
-_protect_scen_| 1| The time step in years| user defined
-_protect_scen_colour_| 1| The time step in years| user defined
+_protect_scen_| CHARACTER | Short form names for the scenario names, used in computation (no spaces please) | user defined
+_protect_scen_names_| CHARACTER| Long form names for the scenario names, used in plotting, same order as _protect_scen_ | user defined
+_protect_scen_colour_| CHARACTER| Colours used in plotting the scenarios, same order as _protect_scen_| user defined
 _country_name_| 1| The time step in years| user defined
 _MPAs_coast_|SpatialPolygonsDataFrame | COASTAL Marine Protected Areas in Atlantic Canada| IUCN and UNEP-WCMC, 2015
 _MPAs_mar_|SpatialPolygonsDataFrame | MARINE Marine Protected Areas in Atlantic Canada| IUCN and UNEP-WCMC, 2015

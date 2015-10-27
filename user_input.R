@@ -126,6 +126,7 @@ fixdist <- 75
 # see protection_scenarios.R and functions.R for more information on protection scenarios
 # you must include "Status_quo" or cost evaluation will not work
 protect_scen <- c("Status_quo","MPAs_maxdist","MPAs_fixed","MPAs_targeted")
+protect_scen_names <- c("Status Quo", "Maximum Distance", "Fixed Distance" , "Targeted")
 protect_scen_colour <- c("purple","green","red","blue")
 # protect_scen <- c("Status_quo","MPAs_targeted")
 # protect_scen_colour <- c("red","blue")
