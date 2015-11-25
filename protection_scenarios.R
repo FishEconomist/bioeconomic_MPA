@@ -33,7 +33,7 @@ if(rep==min(replicates)){
     Breeding <- spTransform(Breeding,CRS(proj))
     Breeding <- gIntersection(EEZ,Breeding,byid=T, drop_lower_td=TRUE)
     # Habitats <- gIntersection(p,Habitats,byid=T, drop_lower_td=TRUE)
-    Habitats <- p[!is.na(over(p,Habitats)),]
+    Habitats <- p[apply(gIntersects(p,Habitats,byid=T),2,any),]
     plot(Habitats)
     
     #### plot MPAs ####
