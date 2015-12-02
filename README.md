@@ -1,4 +1,4 @@
-# Bioeconomic MPA network design - R toolkit
+# Bio-Economic Selection Toolbox for Marine Protected Areas - R toolkit
 Thank you for your interest in the R toolkit for the bioeconomic evaluation of MPA network design! If you haven't already done so, please refer to the manuscript describing the model results (insert link to manuscript once published).
 
 ## Usage
