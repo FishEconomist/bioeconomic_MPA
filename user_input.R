@@ -26,13 +26,13 @@ virtual_fish_ratio <- 20000
 
 # create new protection scenarios? (TRUE creates new maps, but is slow. FALSE uses previously saved maps) 
 # very computationally expensive if TRUE
-protect_scen_new <- T
+protect_scen_new <- FALSE
 
 # plot during loops?
 time_loop_plot <- FALSE
 
 # analysis mode (skips the loops if FALSE), or full model if TRUE
-full_model  <- F
+full_model  <- TRUE
 
 # use connectivity matrices or random dispersal? If FALSE, adults and/or larvae will disperse randomly, otherwise they will disperse according to the connectivity matrices (source polygon as row names, settlement polygon as column names)
 adult_con_mat <- TRUE
@@ -62,6 +62,7 @@ fecundity <- 0.5*10^6
 ######################### Sources of natural Mortality ##################################
 # natural mortality (Swain & Chouinard 2008)
 M <- rnorm(10000,0.5938,0.0517)
+M <- M[M<=1&M>=0] # eliminate any possible values of M >1 or M <0
 
 # larval mortality (Mountain et al. 2008)
 lM <- rbeta(10000,1000,1.2) #larval mortality of 99.88% (range 98.98-99.99%)
