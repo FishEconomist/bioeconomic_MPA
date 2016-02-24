@@ -42,6 +42,7 @@ _M_| rnorm(10000,0.5938,0.0517)| Natural adult mortality,the model selects a ran
 _lM_| rbeta(10000,1000,1.2) | Natural larval mortality, the model selects a random mortality rate from a beta distribution with α=1000 and β=1.2. This is designed to match a mean larval mortality of 99.88% with a range of 98.98-99.99% | Mountain et al. 2008
 _CC_| 431 | The mean carrying capacity for Canadian cod stocks (kg of fish/km^2)| Myers et al. 2001
 _CC_sd_| 387 | The standard deviation of carrying capacity for Canadian cod stocks (kg of fish/km^2)| Myers et al. 2001
+_CCs_| NUMERIC | Habitat carrying capacity, in kg of virtual fish per cell (4548 is the number of cells in the habitat grid). Derived from _CC_ and _CC_sd_ but  could be substituted with "known" habitat carrying capacity. | user defined
 _e_fold_larvae_| 12.47 | The e-folding scale for larvae in km (the distance at which there will be fewer settlers by a factor of e). Estimated as a random walk of 2 cm/s over 90 d planktonic larval duration,the square root is because we assume that the current is like a random walk| Brander and Hurley 1992
 _e_fold_adult_| 74.139| The e-folding scale for larvae in km (the distance at which there will be fewer settlers by a factor of e). Estimated from dispersal data | Lawson & Rose 2000
 _min_size_migration_| cm| Minimium size for adult migration (cm) | Lawson & Rose 2000

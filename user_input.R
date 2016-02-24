@@ -73,6 +73,10 @@ CC <- 0.431088*1000                 #(kg/km^2)
 CC_SD <- 0.386696*1000              #(kg/km^2)
 #if this CC was fixed, total biomass would not exceed 500,000 t
 
+# Habitat carrying capacity, in kg of virtual fish per cell (4548 is the number of cells in the habitat grid). This could be substituted with "known" habitat carrying capacity.
+CCs <- rnorm(4548,CC,CC_SD)*(cell_size^2)/virtual_fish_ratio 
+CCs[CCs<=0] <- 0.1 #enforce no negative CCs
+
 ########################### Dispersal ##################################################
 # larval dispersal kernels are assumed to be exponential, e_fold_larvae is the e folding scale in km (the distance at which there will be fewer settlers by a factor of e). We assume that scale to be sqrt of 2cm/s*90d (avg current velocity * PLD) because we assume that the current is like a random walk
 e_fold_larvae <- sqrt(2/100000*60*60*24*90)

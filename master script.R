@@ -2,7 +2,7 @@
 rm(list=ls())
 if(length(dev.list()["RStudioGD"])>1) dev.off(dev.list()["RStudioGD"])
 # specifiy folder for results
-results_folder <- "D:/bioeconomic_results_v2"
+results_folder <- "D:/bioeconomic_results_v2_regular"
 if(!file.exists(results_folder)) dir.create(results_folder)
 
 #### user inputs ####
