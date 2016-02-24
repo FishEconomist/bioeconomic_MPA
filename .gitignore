@@ -6,3 +6,5 @@ results/*
 *.csv
 *.jpg
 Rplots.pdf
+*plus.R
+*minus.R
