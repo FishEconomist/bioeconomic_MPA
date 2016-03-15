@@ -40,8 +40,7 @@ for(rep in 2:max(replicates)){
 
 
 ########## Figure 3 - plot of biomass over time #################################
-jpeg(paste0(results_folder,'/figures/f3_biomass.jpg'),height=8,width=17,units="cm",res=res,qual=qual)
-ggplot(fish_long,aes(x=time,y=biomass,colour=scenario))+
+p1 <- ggplot(fish_long,aes(x=time,y=biomass,colour=scenario))+
     geom_smooth(cex=2)+
     theme_classic()+
     theme(legend.position="top",
@@ -49,11 +48,10 @@ ggplot(fish_long,aes(x=time,y=biomass,colour=scenario))+
     labs(x="Year",y="Total Stock Biomass (t)")+
     scale_colour_manual(values=protect_scen_colour,
                         labels=protect_scen_names,name="")
-dev.off()
-    
+ggsave(paste0(results_folder,'/figures/f3_biomass.jpg'),p1,height=8,width=17,units="cm",dpi=res)
+
 ########## Figure 4 - plot of catch biomass over time #################################
-jpeg(paste0(results_folder,'/figures/f4_catch.jpg'),height=8,width=17,units="cm",res=res,qual=qual)
-ggplot(fish_value,aes(x=time,y=tot_catch,colour=scenario))+
+p1 <- ggplot(fish_value,aes(x=time,y=tot_catch,colour=scenario))+
     geom_smooth(cex=2)+
     theme_classic()+
     theme(legend.position="top",
@@ -61,12 +59,11 @@ ggplot(fish_value,aes(x=time,y=tot_catch,colour=scenario))+
     labs(x="Year",y="Total catch (t)")+
     scale_colour_manual(values=protect_scen_colour,
                         labels=protect_scen_names,name="")
-dev.off()
+ggsave(paste0(results_folder,'/figures/f4_catch.jpg'),p1,height=8,width=17,units="cm",dpi=res)
 
 
 ########## Figure 5 - distance from shore over time #################################
-jpeg(paste0(results_folder,'/figures/f5_distance.jpg'),height=8,width=17,units="cm",res=res,qual=qual)
-ggplot(fish_value,aes(x=time,y=dist/1000,colour=scenario))+
+p1 <- ggplot(fish_value,aes(x=time,y=dist/1000,colour=scenario))+
     geom_smooth(cex=2)+
     theme_classic()+
     theme(legend.position="top",
@@ -74,7 +71,7 @@ ggplot(fish_value,aes(x=time,y=dist/1000,colour=scenario))+
     labs(x="Year",y="Mean distance from shore (km)")+
     scale_colour_manual(values=protect_scen_colour,
                         labels=protect_scen_names,name="")
-dev.off()
+ggsave(paste0(results_folder,'/figures/f5_distance.jpg'),p1,height=8,width=17,units="cm",dpi=res)
 
 
 
@@ -88,9 +85,6 @@ fish_value <- transform(fish_value,
                               net_catch_value_SDRC_cumsum=ave(net_catch_value_SDRC,scenario,rep,FUN=cumsum)/10^6
 )
 
-with(fish_value, interaction.plot(time, scenario, net_catch_value_SDRA_cumsum,
-                              lwd = 3,
-                             ylab = "10^6$", xlab = "time", trace.label = "group"))
 
 fit <- aov(net_catch_value_SDRA_cumsum ~ scenario * time + Error(rep/(scenario*time)), data = fish_value)
 summary(fit)
@@ -113,7 +107,7 @@ jpeg(paste0(results_folder,'/figures/f6_SDR.jpg'),height=20,width=17,units="cm",
 p1 <- ggplot(gathered,aes(x=time,y=cumsumvalue,colour=scenario,xlab="test"))+
         geom_smooth(cex=1.5)+
         theme_classic()+
-        scale_colour_manual(values=protect_scen_colour,name="",labels = protect_scen_names,name="")+
+        scale_colour_manual(values=protect_scen_colour,labels = protect_scen_names,name="")+
         facet_wrap(~SDR,ncol=1,scale="free_x")+
         theme(strip.background=element_blank(),
               legend.position="none",
@@ -126,7 +120,7 @@ p2 <- ggplot(gathered[gathered$time==2051,],aes(x=scenario,y=cumsumvalue,fill=sc
     # geom_violin(alpha=0.7)+
         geom_boxplot()+
         theme_classic()+
-        scale_fill_manual(values=protect_scen_colour,name="",labels = protect_scen_names,name="")+
+        scale_fill_manual(values=protect_scen_colour,labels = protect_scen_names,name="")+
         facet_wrap(~SDR,ncol=1,scale="free_x")+
         theme(strip.background=element_blank(),
               legend.position="none",
@@ -185,7 +179,7 @@ for(scenario in protect_scen){
 
 ################# catch and biomass summary table #########################
 biomass_table <- summarise(group_by(fish_long,scenario), biomass=paste0(round(mean(biomass))," (",round(sd(biomass)/sqrt(2550)),")"))
-catch_table <- summarise(group_by(fish_value,scenario), 
+catch_table <- summarise(group_by(fish_value,scenario),
                          catch=paste0(round(mean(tot_catch))," (",round(sd(tot_catch)/sqrt(2550)),")"),
                          distance=paste0(round(mean(dist)/1000,2)," (",round(sd(dist/1000)/sqrt(2550),2),")"))
 moratorium_table <- summarise(group_by(fish_value,scenario,rep), n=sum(tot_catch==0)/length(time)*100)
