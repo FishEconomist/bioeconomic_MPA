@@ -268,11 +268,13 @@ SDR_value <- function(t0,t,value,i){
 
 #### function for dispersal based on connectivity matrices ####
 con_mat_disperse <- function(polygon,numbers,con_mat){
+    # browser()
     con_mat %>% add_rownames("release_site") %>% 
         filter(release_site %in% polygon) %>%
         mutate(number=lapply(release_site,function(x) numbers[polygon==as.numeric(x)])) %>% 
         gather(settle_site,percent,-release_site,-number) %>% 
         filter(percent>0) %>% 
         group_by(release_site) %>% 
-        do(data.frame(settlement_site=sample(.$settle_site,mean(as.numeric(.$number)),prob=.$percent,replace=TRUE))) 
+        do(data.frame(settlement_site=sample(.$settle_site,mean(as.numeric(.$number)),prob=.$percent,replace=TRUE),stringsAsFactors=FALSE)) %>% 
+        ungroup()
 }

@@ -115,7 +115,7 @@ p1 <- ggplot(gathered,aes(x=time,y=cumsumvalue,colour=scenario,xlab="test"))+
               text=element_text(size=textsize))+
         labs(x="Year",y=expression(paste("Cumulative Net Present Value (10"^"6"," CAD)",sep="")))
 
-p2 <- ggplot(gathered[gathered$time==2051,],aes(x=scenario,y=cumsumvalue,fill=scenario))+
+p2 <- ggplot(gathered[gathered$time==max(time),],aes(x=scenario,y=cumsumvalue,fill=scenario))+
     # geom_jitter(size=0.5)+
     # geom_violin(alpha=0.7)+
         geom_boxplot()+

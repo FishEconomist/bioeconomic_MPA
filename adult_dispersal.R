@@ -20,8 +20,8 @@ if(adult_con_mat){
         )
     }
     fish_table <- fish_table[with(fish_table, order(as.numeric(release_site))), ]
-    fish$polygon[fish$length>=min_size_migration] <- as.numeric(levels(fish_table$settlement_site))[fish_table$settlement_site]
-    
+    fish$polygon[fish$length>=min_size_migration] <- as.numeric(fish_table$settlement_site)
+
 } else {
     # completely random dispersal
     fish <- bind_rows(lapply(unique(fish$polygon), function(x) adult_disperse(fish[fish$polygon==x,],x,min_size_migration,hab_mat,pop_mat)))

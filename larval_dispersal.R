@@ -31,15 +31,18 @@ if(larvae_con_mat){
     
     while("eggs" %in% names(larvae)){
         try(
-            larvae <- data.frame(table(con_mat_disperse(larvae$polygon,larvae$eggs,con_mat)$settlement_site),stringsAsFactors=FALSE) %>% 
-                rename(polygon=Var1)%>%
+            larvae <- con_mat_disperse(larvae$polygon,larvae$eggs,con_mat) %>% 
+                select(settlement_site) %>% 
+                table(dnn="polygon") %>% 
+                as.data.frame() %>% 
                 filter(Freq>0) %>% 
                 group_by(polygon) %>% 
-                summarize(recruit=sum(Freq))
+                summarize(recruit=sum(Freq)) %>% 
+                ungroup() %>% 
+                mutate(polygon=as.numeric(as.character(polygon)))
         )
     }
-    
-    larvae$polygon <- as.integer(larvae$polygon)
+
 } else {
     # completely random dispersal
     pop_mat <- matrix(0,grd@cells.dim[1],grd@cells.dim[2])
