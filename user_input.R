@@ -26,13 +26,13 @@ virtual_fish_ratio <- 20000
 
 # create new protection scenarios? (TRUE creates new maps, but is slow. FALSE uses previously saved maps) 
 # very computationally expensive if TRUE
-protect_scen_new <- T
+protect_scen_new <- F
 
 # plot during loops?
-time_loop_plot <- FALSE
+time_loop_plot <- F
 
 # analysis mode (skips the loops if FALSE), or full model if TRUE
-full_model  <- F
+full_model  <- T
 
 # use connectivity matrices or random dispersal? If FALSE, adults and/or larvae will disperse randomly, otherwise they will disperse according to the connectivity matrices (source polygon as row names, settlement polygon as column names)
 adult_con_mat <- TRUE
@@ -125,11 +125,12 @@ fixdist <- 75
 # protection scenarios to include in analysis current options include "Status_quo","MPAs_maxdist","MPAs_fixed","MPAs_targeted"
 # see protection_scenarios.R and functions.R for more information on protection scenarios
 # you must include "Status_quo" or cost evaluation will not work
-protect_scen <- c("Status_quo","MPAs_maxdist","MPAs_fixed","MPAs_targeted")
-protect_scen_names <- c("Status Quo", "Maximum Distance", "Fixed Distance" , "Targeted")
-protect_scen_colour <- c("purple","green","red","blue")
-# protect_scen <- c("Status_quo","MPAs_targeted")
-# protect_scen_colour <- c("red","blue")
+# protect_scen <- c("Status_quo","MPAs_maxdist","MPAs_fixed","MPAs_targeted")
+# protect_scen_names <- c("Status Quo", "Maximum Distance", "Fixed Distance" , "Targeted")
+# protect_scen_colour <- c("purple","green","red","blue")
+protect_scen <- c("Status_quo","MPAs_targeted")
+protect_scen_names <- c("Status Quo", "Targeted")
+protect_scen_colour <- c("red","blue")
 
 
 # country name for coastline download for new "coastal" MPA placement (from package maptools in data(wrld_simpl))
