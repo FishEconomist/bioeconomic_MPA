@@ -1,4 +1,4 @@
-results_folder <- "D:/bioeconomic_results_test"
+results_folder <- "D:/bioeconomic_results_newconmat"
 
 require(dplyr)
 ### Generate random connectivity matrix
@@ -20,8 +20,16 @@ source("protection_scenarios.R")
 tot_time <- 1991:2051
 
 # set n
-n=10000
+n=20000
 
+hab_mat <- matrix(0,grd@cells.dim[1],grd@cells.dim[2])
+for(i in 1:grd@cells.dim[1]){
+    for(j in 1:grd@cells.dim[2]){
+        if(any(loc_hab$X==i&loc_hab$Y==j)){
+            hab_mat[i,j] <- which(loc_p$X==i&loc_p$Y==j)
+            }
+    }
+}
 #### con_mat for adults ####
 for(t in tot_time[1:5]){
     print(t)   
@@ -48,7 +56,7 @@ for(t in tot_time[6:61]){
 }
 
 #### con_mat for larvae ####
-n <- 5000
+n <- 10000
 for(t in tot_time[1:5]){
     
     larvae <- data.frame(polygon=rep(which(gIntersects(p,Breeding,byid = TRUE),arr.ind = TRUE)[,2],each=n))
