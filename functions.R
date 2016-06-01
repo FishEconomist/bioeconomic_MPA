@@ -226,10 +226,9 @@ BH_CC_mortality <- function(larvae,fish,CCs){
     for(i in larvae$polygon){
         fishi <- fish_table$num[fish_table$polygon==i]
         larvaei <- larvae$recruit[larvae$polygon==i]
-        R <- (larvaei+fishi)/fishi
+        R <- larvaei/fishi
         CC_n <- ceiling(CCs[i]/fish_avg_weighti)
-        new_total <- R*fishi/(1+fishi/CC_n)
-        new_recruits <- new_total-fishi
+        new_recruits <- R*fishi/(1+fishi/CC_n)
         larvae$new_recruits[larvae$polygon==i] <- round(new_recruits)
     } 
     larvae$new_recruits[larvae$new_recruits<0] <- 0

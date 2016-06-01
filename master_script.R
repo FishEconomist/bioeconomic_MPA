@@ -2,7 +2,7 @@
 rm(list=ls())
 if(length(dev.list()["RStudioGD"])>1) dev.off(dev.list()["RStudioGD"])
 # specifiy folder for results
-results_folder <- "D:/bioeconomic_results_v2_regular"
+results_folder <- "F:/bioeconomic_results_v2_10_morefish/"
 if(!dir.exists(results_folder)) dir.create(results_folder)
 memory.limit(32608)
 

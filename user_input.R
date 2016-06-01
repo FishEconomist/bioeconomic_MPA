@@ -10,7 +10,7 @@ tot_time <- (min(time)-spinup):max(time)
 dt <- 1
 
 # replicates (should be more than 1 or fish_value.R onwards will not work)
-replicates <- c(1:100)
+replicates <- c(1)
 
 # cell size in km
 cell_size <- 20
@@ -69,13 +69,13 @@ lM <- rbeta(10000,1000,1.2) #larval mortality of 99.88% (range 98.98-99.99%)
 #hist(lM);mean(lM);min(lM);max(lM)
 
 # Beverton-Holt model for carrying capacity based recruitment mortality, carrying capacity is the mean of North American carrying capacities in Table 3 of Myers et al. 2001 (CC=0.431088 tonnes/km^2 SD=0.386696)
-CC <- 0.431088*1000                 #(kg/km^2)
-CC_SD <- 0.386696*1000              #(kg/km^2)
+CC <- 0.579352312*1000                 #(kg/km^2)
+CC_SD <- 0.772463562*1000              #(kg/km^2)
 #if this CC was fixed, total biomass would not exceed 500,000 t
 
 # Habitat carrying capacity, in kg of virtual fish per cell (4548 is the number of cells in the habitat grid). This could be substituted with "known" habitat carrying capacity.
 CCs <- rnorm(4548,CC,CC_SD)*(cell_size^2)/virtual_fish_ratio 
-CCs[CCs<=0] <- 0.1 #enforce no negative CCs
+CCs[CCs<=0] <- 1 #enforce no negative CCs
 
 ########################### Dispersal ##################################################
 # larval dispersal kernels are assumed to be exponential, e_fold_larvae is the e folding scale in km (the distance at which there will be fewer settlers by a factor of e). We assume that scale to be sqrt of 2cm/s*90d (avg current velocity * PLD) because we assume that the current is like a random walk
@@ -111,7 +111,7 @@ FMSY <- 0.28
 FMSY_buffer <- 2/3
 
 #percent of population measured for biomass estimation (0.001 = 0.1%)
-sampling_pop <- 0.001
+sampling_pop <- 0.01
 # number of years to use in biomass estimate
 biomass_est_n_years <- 5
 
@@ -130,11 +130,12 @@ fixdist <- 75
 # protection scenarios to include in analysis current options include "Status_quo","MPAs_maxdist","MPAs_fixed","MPAs_targeted"
 # see protection_scenarios.R and functions.R for more information on protection scenarios
 # you must include "Status_quo" or cost evaluation will not work
-protect_scen <- c("Status_quo","MPAs_maxdist","MPAs_fixed","MPAs_targeted")
-protect_scen_names <- c("Status Quo", "Maximum Distance", "Fixed Distance" , "Targeted")
-protect_scen_colour <- c("purple","green","red","blue")
-# protect_scen <- c("Status_quo","MPAs_targeted")
-# protect_scen_colour <- c("red","blue")
+# protect_scen <- c("Status_quo","MPAs_maxdist","MPAs_fixed","MPAs_targeted")
+# protect_scen_names <- c("Status Quo", "Maximum Distance", "Fixed Distance" , "Targeted")
+# protect_scen_colour <- c("purple","green","red","blue")
+protect_scen <- c("Status_quo","MPAs_targeted")
+protect_scen_names <- c("Status Quo","Targeted")
+protect_scen_colour <- c("red","blue")
 
 
 # country name for coastline download for new "coastal" MPA placement (from package maptools in data(wrld_simpl))
