@@ -3,7 +3,8 @@ rm(list=ls())
 if(length(dev.list()["RStudioGD"])>1) dev.off(dev.list()["RStudioGD"])
 # specifiy folder for results
 results_folder <- "D:/bioeconomic_results_v2_regular"
-if(!file.exists(results_folder)) dir.create(results_folder)
+if(!dir.exists(results_folder)) dir.create(results_folder)
+memory.limit(32608)
 
 #### user inputs ####
 source("user_input.R")
@@ -54,6 +55,8 @@ if(full_model){
                 if(time_loop_plot) source("time_loop_plots.R")
             }
             ############################# End time loops ###################################################
+            # clean up
+            gc()
         }
         ############################ End scenario loops ###################################################
     }
