@@ -13,14 +13,17 @@ if(adult_con_mat){
     row.names(con_mat) <- as.numeric(unlist(con_mat[, 1]))
     con_mat <- con_mat %>% select(-1)
     
-    fish_table <- data.frame(table(fish$polygon[fish$length>=min_size_migration]),stringsAsFactors=FALSE)
-    while("Var1" %in% names(fish_table)){
-        try(
-            fish_table <- con_mat_disperse(fish_table$Var1,fish_table$Freq,con_mat)
-        )
+    if(any(fish$length>=min_size_migration)){
+        fish_table <- data.frame(table(fish$polygon[fish$length>=min_size_migration]),stringsAsFactors=FALSE)
+        while("Var1" %in% names(fish_table)){
+            try(
+                fish_table <- con_mat_disperse(fish_table$Var1,fish_table$Freq,con_mat)
+            )
+        }
+        fish_table <- fish_table[with(fish_table, order(as.numeric(release_site))), ]
+        fish$polygon[fish$length>=min_size_migration] <- as.numeric(fish_table$settlement_site)
     }
-    fish_table <- fish_table[with(fish_table, order(as.numeric(release_site))), ]
-    fish$polygon[fish$length>=min_size_migration] <- as.numeric(fish_table$settlement_site)
+    
 
 } else {
     # completely random dispersal
